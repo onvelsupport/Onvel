@@ -7,15 +7,18 @@
   <title>ONVEL</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-        margin: 0;
-        font-family: 'Courier New', monospace;
-        background: #f5f5f5;
-        color: #000;
-        
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background: #f5f5f5;
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     header {
@@ -23,45 +26,145 @@
       justify-content: space-between;
       align-items: center;
       padding: 20px 40px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo a {
+      display: inline-block;
     }
 
     .logo img {
-      height: 40px;
+      height: 50px;
+      width: auto;
+      display: block;
     }
 
     .nav-right {
       display: flex;
       align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
-    .nav-right a, .nav-right span {
-      margin-left: 20px;
+    .nav-right a,
+    .nav-right span {
       text-decoration: none;
       color: black;
       font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .nav-right a:hover,
+    footer a:hover {
+      opacity: 0.7;
+    }
+
+    main {
+      flex: 1;
+      width: 100%;
     }
 
     footer {
       text-align: center;
-      padding: 30px;
+      padding: 30px 20px;
       font-size: 12px;
     }
 
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      margin-bottom: 15px;
+    }
+
     footer a {
-      margin: 0 10px;
       text-decoration: none;
       color: black;
     }
 
+    footer p {
+      margin: 0;
+    }
+
     .page-title {
-  text-align: center;
-  font-family: 'Times New Roman', serif;
-  font-size: 44px;
-  margin: 30px 0 90px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
+      text-align: center;
+      font-family: 'Times New Roman', serif;
+      font-size: 44px;
+      margin: 30px 0 90px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 18px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .logo img {
+        height: 42px;
+      }
+
+      .nav-right {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 14px 18px;
+      }
+
+      .nav-right a,
+      .nav-right span {
+        font-size: 13px;
+      }
+
+      .page-title {
+        font-size: 30px;
+        margin: 20px 0 50px;
+      }
+
+      footer {
+        padding: 25px 16px;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 16px;
+      }
+
+      .logo img {
+        height: 38px;
+      }
+
+      .nav-right {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+      }
+
+      .nav-right a,
+      .nav-right span {
+        font-size: 12px;
+      }
+
+      .page-title {
+        font-size: 24px;
+        margin: 16px 0 35px;
+      }
+
+      footer {
+        font-size: 11px;
+      }
+    }
   </style>
 
   {% block extra_css %}{% endblock %}
@@ -71,29 +174,30 @@
 
 <header>
   <div class="logo">
-  <a href="{% url 'home' %}">
-    <img src="{% static 'store/images/logo.png' %}" alt="ONVEL Logo">
-  </a>
-</div>
+    <a href="{% url 'home' %}">
+      <img src="{% static 'store/images/logo.png' %}" alt="ONVEL Logo">
+    </a>
+  </div>
 
-<div class="nav-right">
-  <a href="{% url 'home' %}">SHOP</a>
-  <a href="{% url 'terms' %}">TERMS & CONDITIONS</a>
-  <a href="{% url 'contact' %}">CONTACT</a>
-  <a href="{% url 'cart' %}">CART ({{ cart_count }})</a>
-</div>
+  <div class="nav-right">
+    <a href="{% url 'home' %}">SHOP</a>
+    <a href="{% url 'terms' %}">TERMS & CONDITIONS</a>
+    <a href="{% url 'contact' %}">CONTACT</a>
+    <a href="{% url 'cart' %}">CART ({{ cart_count }})</a>
+  </div>
 </header>
 
-
-<main style="flex: 1;">
+<main>
   {% block content %}{% endblock %}
 </main>
 
 <footer>
-  <a href="{% url 'refund' %}">REFUND POLICY</a>
-  <a href="{% url 'privacy' %}">PRIVACY POLICY</a>
-  <a href="{% url 'terms' %}">TERMS OF SERVICE</a>
-  <a href="{% url 'contact' %}">CONTACT INFORMATION</a>
+  <div class="footer-links">
+    <a href="{% url 'refund' %}">REFUND POLICY</a>
+    <a href="{% url 'privacy' %}">PRIVACY POLICY</a>
+    <a href="{% url 'terms' %}">TERMS OF SERVICE</a>
+    <a href="{% url 'contact' %}">CONTACT INFORMATION</a>
+  </div>
   <p>© 2026, ONVEL</p>
 </footer>
 
