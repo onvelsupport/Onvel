@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ONVEL</title>
+
+  <style>
+    body {
+        margin: 0;
+        font-family: 'Courier New', monospace;
+        background: #f5f5f5;
+        color: #000;
+        
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+    }
+
+    .logo img {
+      height: 40px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-right a, .nav-right span {
+      margin-left: 20px;
+      text-decoration: none;
+      color: black;
+      font-size: 14px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 12px;
+    }
+
+    footer a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: black;
+    }
+
+    .page-title {
+  text-align: center;
+  font-family: 'Times New Roman', serif;
+  font-size: 44px;
+  margin: 30px 0 90px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+  </style>
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+<header>
+  <div class="logo">
+  <a href="{% url 'home' %}">
+    <img src="{% static 'store/images/logo.png' %}" alt="ONVEL Logo">
+  </a>
+</div>
+
+<div class="nav-right">
+  <a href="{% url 'home' %}">SHOP</a>
+  <a href="{% url 'terms' %}">TERMS & CONDITIONS</a>
+  <a href="{% url 'contact' %}">CONTACT</a>
+  <a href="{% url 'cart' %}">CART ({{ cart_count }})</a>
+</div>
+</header>
+
+
+<main style="flex: 1;">
+  {% block content %}{% endblock %}
+</main>
+
+<footer>
+  <a href="{% url 'refund' %}">REFUND POLICY</a>
+  <a href="{% url 'privacy' %}">PRIVACY POLICY</a>
+  <a href="{% url 'terms' %}">TERMS OF SERVICE</a>
+  <a href="{% url 'contact' %}">CONTACT INFORMATION</a>
+  <p>© 2026, ONVEL</p>
+</footer>
+
+</body>
+</html>

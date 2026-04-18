@@ -1,0 +1,75 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  padding: 40px;
+}
+
+.product {
+  text-align: center;
+}
+
+.product img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  background: #ddd;
+}
+
+.product p {
+  margin: 10px 0 5px;
+  font-size: 14px;
+}
+
+.price {
+  font-size: 14px;
+}
+
+.sold-out {
+  opacity: 0.5;
+}
+
+.shop-all {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.shop-all button {
+  padding: 15px 30px;
+  background: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="grid">
+  {% for product in products %}
+    <div class="product {% if product.sold_out %}sold-out{% endif %}">
+      <a href="{% url 'product_detail' product.slug %}" style="text-decoration: none; color: inherit;">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        <p>{{ product.name|upper }}</p>
+        <p class="price">
+          £{{ product.price }}
+          {% if product.sold_out %}— SOLD OUT{% endif %}
+        </p>
+      </a>
+    </div>
+  {% empty %}
+    <p>No products available yet.</p>
+  {% endfor %}
+</section>
+
+<div class="shop-all">
+  <button>SHOP ALL</button>
+</div>
+
+{% endblock %}

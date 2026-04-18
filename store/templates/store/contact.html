@@ -1,0 +1,45 @@
+{% extends 'store/base.html' %}
+
+{% block extra_css %}
+<style>
+  .page-title {
+    text-align: center;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 36px;
+    margin: 40px 0 60px;
+    text-transform: uppercase;
+  }
+
+  .contact-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px;
+    text-align: center;
+  }
+
+  .contact-container p {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;          /* same as index */
+    margin: 10px 0 5px;       /* same spacing as product text */
+    text-transform: uppercase;
+  }
+
+  .contact-container a {
+    color: black;
+    text-decoration: underline;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">CONTACT INFORMATION</h1>
+
+<div class="contact-container">
+  <p>
+    FOR ANY ENQUIRIES CONTACT
+    <a href="mailto:ONVEL.X@GMAIL.COM">ONVEL.X@GMAIL.COM</a>
+  </p>
+</div>
+
+{% endblock %}

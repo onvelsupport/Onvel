@@ -1,0 +1,185 @@
+{% extends 'store/base.html' %}
+
+{% block extra_css %}
+<style>
+  .cart-container {
+    max-width: 1380px;
+    margin: 10px auto 0;
+    padding: 0 35px 40px;
+  }
+
+  .cart-item {
+    display: grid;
+    grid-template-columns: 220px 1fr 120px 140px;
+    gap: 28px;
+    align-items: start;
+    margin-bottom: 40px;
+  }
+
+  .cart-item-image img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    display: block;
+    background: #ddd;
+  }
+
+  .cart-item-info {
+    padding-top: 110px;
+  }
+
+  .cart-item-name {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 17px;
+    margin: 0 0 26px;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  .remove-link {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 13px;
+    color: #000;
+    text-decoration: underline;
+    text-transform: uppercase;
+  }
+
+  .cart-item-price {
+    padding-top: 132px;
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .cart-quantity {
+    padding-top: 128px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    font-size: 18px;
+  }
+
+  .cart-quantity a {
+    color: #000;
+    text-decoration: none;
+    font-size: 28px;
+    line-height: 1;
+    display: inline-block;
+  }
+
+  .cart-quantity .minus {
+    color: #bfbfbf;
+  }
+
+  .cart-total-section {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .cart-total-text {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 17px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+  }
+
+  .checkout-btn {
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    padding: 16px 30px;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 15px;
+    text-transform: uppercase;
+  }
+
+  .empty-cart {
+    text-align: center;
+    padding: 80px 20px;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 1100px) {
+    .cart-item {
+      grid-template-columns: 200px 1fr;
+      gap: 25px;
+    }
+
+    .cart-item-info,
+    .cart-item-price,
+    .cart-quantity {
+      padding-top: 0;
+    }
+
+    .cart-item-price,
+    .cart-quantity {
+      justify-content: flex-start;
+      text-align: left;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .cart-container {
+      padding: 0 20px 40px;
+    }
+
+    .cart-item {
+      grid-template-columns: 1fr;
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .cart-item-image img {
+      margin: 0 auto;
+    }
+
+    .cart-item-price,
+    .cart-quantity {
+      justify-content: center;
+      text-align: center;
+    }
+
+    .cart-item-info {
+      padding-top: 0;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cart-container">
+  {% if cart_items %}
+    {% for item in cart_items %}
+      <div class="cart-item">
+        <div class="cart-item-image">
+          <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+        </div>
+
+        <div class="cart-item-info">
+          <p class="cart-item-name">{{ item.product.name }}</p>
+          <a href="{% url 'remove_from_cart' item.product.id %}" class="remove-link">Remove</a>
+        </div>
+
+        <div class="cart-item-price">
+          £{{ item.product.price }}
+        </div>
+
+        <div class="cart-quantity">
+          <a href="{% url 'update_cart_quantity' item.product.id 'decrease' %}" class="minus">−</a>
+          <span>{{ item.quantity }}</span>
+          <a href="{% url 'update_cart_quantity' item.product.id 'increase' %}">+</a>
+        </div>
+      </div>
+    {% endfor %}
+
+    <div class="cart-total-section">
+      <p class="cart-total-text">Total: £{{ total }}</p>
+      <a href="{% url 'checkout' %}" class="checkout-btn">Checkout</a>
+    </div>
+  {% else %}
+    <p class="empty-cart">Your cart is empty.</p>
+  {% endif %}
+</div>
+{% endblock %}

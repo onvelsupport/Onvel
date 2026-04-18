@@ -1,0 +1,55 @@
+{% extends 'store/base.html' %}
+
+{% block extra_css %}
+<style>
+  .page-title {
+    text-align: center;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 44px;
+    margin: 30px 0 90px;
+    text-transform: uppercase;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  .container p {
+    font-size: 20px;
+    line-height: 1.8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .container a {
+    color: black;
+    text-decoration: underline;
+    word-break: break-word;
+  }
+
+  @media (max-width: 600px) {
+    .container p {
+      font-size: 16px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">PRIVACY POLICY</h1>
+
+<div class="container">
+  <p>
+    IN ADDITION, YOU AGREE TO OUR MESSAGING TERMS
+    (<a href="https://terms.pscr.pt/legal/shop/ab72c2-2/terms_of_service" target="_blank">
+    TERMS OF SERVICE</a>)
+    AND MESSAGING PRIVACY POLICY
+    (<a href="https://terms.pscr.pt/legal/shop/ab72c2-2/privacy_policy" target="_blank">
+    PRIVACY POLICY</a>).
+</p>
+</div>
+
+{% endblock %}
