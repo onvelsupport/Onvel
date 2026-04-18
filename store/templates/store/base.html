@@ -68,32 +68,16 @@
     }
 
     /* ===== UPDATED FOOTER ===== */
-    footer {
+        footer {
       text-align: center;
-      padding: 40px 20px;
-      font-size: 13px;
-      color: #444;
-    }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 8px 40px;
-      max-width: 600px;
-      margin: 0 auto 20px;
+      padding: 30px;
+      font-size: 12px;
     }
 
     footer a {
+      margin: 0 10px;
       text-decoration: none;
-      color: #444;
-      letter-spacing: 1px;
-    }
-
-    footer p {
-      margin: 0;
-      font-size: 12px;
-      letter-spacing: 1px;
+      color: black;
     }
     /* ========================== */
 
@@ -199,20 +183,13 @@
 </main>
 
 <footer>
-  <!-- First line -->
-  <div class="footer-links">
-    <a href="{% url 'refund' %}">REFUND POLICY</a>
-    <a href="{% url 'privacy' %}">PRIVACY POLICY</a>
-    <a href="{% url 'terms' %}">TERMS OF SERVICE</a>
-  </div>
-
-  <!-- Second line -->
-  <div class="footer-links">
-    <a href="{% url 'contact' %}">CONTACT INFORMATION</a>
-  </div>
-
+  <a href="{% url 'refund' %}">REFUND POLICY</a>
+  <a href="{% url 'privacy' %}">PRIVACY POLICY</a>
+  <a href="{% url 'terms' %}">TERMS OF SERVICE</a>
+  <a href="{% url 'contact' %}">CONTACT INFORMATION</a>
   <p>© 2026, ONVEL</p>
 </footer>
+
 
 </body>
 </html>
