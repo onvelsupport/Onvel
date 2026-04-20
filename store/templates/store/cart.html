@@ -2,79 +2,105 @@
 
 {% block extra_css %}
 <style>
-  .cart-container {
-    max-width: 1200px;
-    margin: 20px auto 0;
-    padding: 0 24px 50px;
-  }
-
-  .cart-item {
+  .cart-page {
+    max-width: 1400px;
+    margin: 30px auto 0;
+    padding: 0 24px 60px;
     display: grid;
-    grid-template-columns: 220px 1fr 120px 140px;
-    gap: 28px;
+    grid-template-columns: 1.9fr 0.95fr;
+    gap: 34px;
     align-items: start;
-    margin-bottom: 50px;
   }
 
-  .cart-item-image img {
+  .cart-left {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .cart-card,
+  .summary-card {
+    background: #f8f8f8;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  }
+
+  .cart-card {
+    display: grid;
+    grid-template-columns: 170px 1fr auto;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .cart-image img {
     width: 100%;
-    max-width: 200px;
-    height: auto;
+    max-width: 170px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 14px;
     display: block;
     background: #ddd;
   }
 
-  .cart-item-info {
-    padding-top: 110px;
+  .cart-info {
+    min-width: 0;
   }
 
-  .cart-item-name {
-    font-family: 'Courier New', monospace;
-    font-size: 16px;
-    margin: 0 0 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    line-height: 1.3;
-  }
-
-  .cart-item-size {
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
+  .cart-name {
     margin: 0 0 14px;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    line-height: 1.35;
+    letter-spacing: 0.5px;
+  }
+
+  .cart-meta {
+    margin: 0 0 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #444;
+    line-height: 1.6;
+  }
+
+  .cart-price {
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .cart-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 22px;
   }
 
   .remove-link {
     font-family: 'Courier New', monospace;
-    font-size: 12px;
+    font-size: 13px;
     color: #000;
     text-decoration: underline;
     text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .cart-item-price {
-    padding-top: 132px;
-    font-size: 18px;
-    text-align: center;
-    font-family: 'Courier New', monospace;
+    letter-spacing: 0.5px;
   }
 
   .cart-quantity {
-    padding-top: 128px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 24px;
-    font-size: 18px;
+    gap: 18px;
     font-family: 'Courier New', monospace;
+    font-size: 22px;
   }
 
   .cart-quantity a {
     color: #000;
     text-decoration: none;
-    font-size: 28px;
+    font-size: 32px;
     line-height: 1;
     display: inline-block;
   }
@@ -83,145 +109,189 @@
     color: #bfbfbf;
   }
 
-  .cart-total-section {
-    text-align: center;
-    margin-top: 20px;
+  .summary-title {
+    margin: 0 0 28px;
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
-  .cart-total-text {
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
     font-family: 'Courier New', monospace;
-    font-size: 14px;
-    margin-bottom: 16px;
+    font-size: 15px;
     text-transform: uppercase;
-    letter-spacing: 1px;
+  }
+
+  .summary-total {
+    margin-top: 10px;
+    padding-top: 14px;
+    border-top: 1px solid #d9d9d9;
+    font-weight: bold;
+    font-size: 17px;
   }
 
   .checkout-btn {
-    display: inline-block;
+    display: block;
+    width: 100%;
+    margin-top: 34px;
     background: #000;
     color: #fff;
     text-decoration: none;
-    padding: 16px 30px;
+    text-align: center;
+    padding: 16px 20px;
+    border-radius: 14px;
     font-family: 'Courier New', monospace;
-    font-size: 13px;
+    font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
 
   .empty-cart {
     text-align: center;
-    padding: 80px 20px;
+    padding: 90px 20px;
+    font-family: 'Courier New', monospace;
     font-size: 14px;
     text-transform: uppercase;
-    font-family: 'Courier New', monospace;
   }
 
-  @media (max-width: 900px) {
-    .cart-item {
-      grid-template-columns: 180px 1fr;
-      gap: 22px;
+  @media (max-width: 980px) {
+    .cart-page {
+      grid-template-columns: 1fr;
     }
 
-    .cart-item-info,
-    .cart-item-price,
-    .cart-quantity {
-      padding-top: 0;
-    }
-
-    .cart-item-price,
-    .cart-quantity {
-      justify-content: flex-start;
-      text-align: left;
+    .summary-card {
+      order: -1;
     }
   }
 
   @media (max-width: 700px) {
-    .cart-container {
-      padding: 0 20px 40px;
+    .cart-page {
+      padding: 0 16px 40px;
+      gap: 20px;
     }
 
-    .cart-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 16px;
-      margin-bottom: 55px;
+    .cart-card,
+    .summary-card {
+      border-radius: 18px;
+      padding: 18px;
     }
 
-    .cart-item-image {
-      order: 1;
+    .cart-card {
+      grid-template-columns: 1fr;
+      gap: 18px;
     }
 
-    .cart-item-image img {
-      max-width: 320px;
-      margin: 0 auto;
+    .cart-image img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
     }
 
-    .cart-item-info {
-      order: 2;
-      padding-top: 0;
-    }
-
-    .cart-item-price {
-      order: 3;
-      padding-top: 0;
+    .cart-info {
       text-align: center;
     }
 
-    .cart-quantity {
-      order: 4;
-      padding-top: 0;
-      justify-content: center;
-      text-align: center;
+    .cart-name {
+      font-size: 16px;
+      margin-bottom: 10px;
     }
 
-    .cart-item-name {
+    .cart-meta {
+      font-size: 12px;
       margin-bottom: 8px;
     }
 
-    .cart-item-size {
-      margin-bottom: 10px;
+    .cart-price {
+      font-size: 16px;
+    }
+
+    .cart-actions {
+      align-items: center;
+      gap: 14px;
+    }
+
+    .cart-quantity {
+      font-size: 20px;
+      gap: 20px;
+    }
+
+    .cart-quantity a {
+      font-size: 30px;
+    }
+
+    .summary-title {
+      font-size: 18px;
+      margin-bottom: 22px;
+    }
+
+    .summary-row {
+      font-size: 14px;
+    }
+
+    .checkout-btn {
+      margin-top: 24px;
+      border-radius: 12px;
     }
   }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="cart-container">
-  {% if cart_items %}
-    {% for item in cart_items %}
-      <div class="cart-item">
-        <div class="cart-item-image">
-          <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
-        </div>
+{% if cart_items %}
+  <div class="cart-page">
+    <div class="cart-left">
+      {% for item in cart_items %}
+        <div class="cart-card">
+          <div class="cart-image">
+            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+          </div>
 
-        <div class="cart-item-info">
-          <p class="cart-item-name">{{ item.product.name }}</p>
-          {% if item.size %}
-            <p class="cart-item-size">Size: {{ item.size }}</p>
-          {% endif %}
-          <a href="{% url 'remove_from_cart' item.cart_key %}" class="remove-link">Remove</a>
-        </div>
+          <div class="cart-info">
+            <p class="cart-name">{{ item.product.name }}</p>
 
-        <div class="cart-item-price">
-          £{{ item.product.price }}
-        </div>
+            {% if item.size %}
+              <p class="cart-meta">Size: {{ item.size }}</p>
+            {% endif %}
 
-        <div class="cart-quantity">
-          <a href="{% url 'update_cart_quantity' item.cart_key 'decrease' %}" class="minus">−</a>
-          <span>{{ item.quantity }}</span>
-          <a href="{% url 'update_cart_quantity' item.cart_key 'increase' %}">+</a>
+            <p class="cart-price">£{{ item.product.price }}</p>
+          </div>
+
+          <div class="cart-actions">
+            <a href="{% url 'remove_from_cart' item.cart_key %}" class="remove-link">Remove</a>
+
+            <div class="cart-quantity">
+              <a href="{% url 'update_cart_quantity' item.cart_key 'decrease' %}" class="minus">−</a>
+              <span>{{ item.quantity }}</span>
+              <a href="{% url 'update_cart_quantity' item.cart_key 'increase' %}">+</a>
+            </div>
+          </div>
         </div>
+      {% endfor %}
+    </div>
+
+    <div class="summary-card">
+      <h2 class="summary-title">Order Summary</h2>
+
+      <div class="summary-row">
+        <span>Items</span>
+        <span>{{ cart_count }}</span>
       </div>
-    {% endfor %}
 
-    <div class="cart-total-section">
-      <p class="cart-total-text">Total: £{{ total }}</p>
+      <div class="summary-row summary-total">
+        <span>Total</span>
+        <span>£{{ total }}</span>
+      </div>
+
       <a href="{% url 'checkout' %}" class="checkout-btn">Checkout</a>
     </div>
-  {% else %}
-    <p class="empty-cart">Your cart is empty.</p>
-  {% endif %}
-</div>
+  </div>
+{% else %}
+  <p class="empty-cart">Your cart is empty.</p>
+{% endif %}
 {% endblock %}
