@@ -13,6 +13,52 @@ from .forms import CheckoutForm
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+def get_payment_method_label(session):
+    try:
+        payment_intent_id = session.get('payment_intent')
+        if not payment_intent_id:
+            return "CARD"
+
+        payment_intent = stripe.PaymentIntent.retrieve(
+            payment_intent_id,
+            expand=['latest_charge']
+        )
+
+        latest_charge = payment_intent.get('latest_charge')
+        if not latest_charge:
+            return "CARD"
+
+        payment_method_details = latest_charge.get('payment_method_details', {})
+        pm_type = payment_method_details.get('type')
+
+        if pm_type == 'card':
+            card = payment_method_details.get('card', {})
+            wallet = card.get('wallet')
+
+            if wallet:
+                wallet_type = wallet.get('type')
+                if wallet_type == 'apple_pay':
+                    return "APPLE PAY"
+                if wallet_type == 'google_pay':
+                    return "GOOGLE PAY"
+                if wallet_type == 'samsung_pay':
+                    return "SAMSUNG PAY"
+
+            brand = card.get('brand')
+            if brand:
+                return brand.replace('_', ' ').upper()
+
+            return "CARD"
+
+        if pm_type:
+            return pm_type.replace('_', ' ').upper()
+
+        return "CARD"
+
+    except Exception as e:
+        print("Could not determine payment method:", str(e))
+        return "CARD"
+
 
 def home(request):
     products = Product.objects.all().order_by('-created_at')
