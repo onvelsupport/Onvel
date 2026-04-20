@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Order Confirmation</title>
+</head>
+<body style="margin:0; padding:0; background-color:#0d0d0d; font-family:Arial, sans-serif; color:#ffffff;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d0d0d; padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="width:600px; max-width:600px; background:#0d0d0d; color:#ffffff;">
+          
+          <tr>
+            <td align="center" style="padding:20px 30px 30px;">
+              <h1 style="margin:0; font-size:42px; font-weight:bold; letter-spacing:1px; color:#ffffff;">ONVEL</h1>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="border-top:1px solid #3a3a3a; padding:30px;">
+              <h2 style="margin:0; font-size:30px; font-weight:700; color:#ffffff;">Order in progress</h2>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="border-top:1px solid #3a3a3a; padding:30px;">
+              <p style="margin:0 0 10px; font-size:14px; color:#bdbdbd;">Order number</p>
+              <p style="margin:0 0 28px; font-size:28px; color:#9ec1ff;">{{ order.order_number }}</p>
+
+              <p style="margin:0 0 10px; font-size:14px; color:#bdbdbd;">Delivery to:</p>
+              <p style="margin:0; font-size:20px; line-height:1.8; color:#ffffff;">
+                {{ order.address }}<br>
+                {{ order.city }}<br>
+                {{ order.postcode }}<br>
+                {{ order.country }}
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:0 30px 30px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#232323;">
+                <tr>
+                  <td style="padding:22px; font-size:15px; line-height:1.8; color:#f1f1f1;">
+                    We will notify you by email once your order is ready for dispatch.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:0 30px 40px;">
+              <a href="{{ tracking_url }}"
+                 style="display:block; text-align:center; background:#f2f2f2; color:#111111; text-decoration:none; padding:18px 24px; font-size:24px; font-weight:500;">
+                Track my order
+              </a>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="border-top:1px solid #3a3a3a; padding:30px;">
+              {% for item in order_items %}
+                <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                  <tr>
+                    <td width="120" valign="top">
+                      {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="100" style="display:block; width:100px; height:auto; border:0;">
+                      {% endif %}
+                    </td>
+                    <td valign="top" style="padding-left:16px;">
+                      <p style="margin:0 0 10px; font-size:20px; color:#ffffff;">{{ item.product.name }}</p>
+                      <p style="margin:0 0 10px; font-size:18px; color:#ffffff;">£{{ item.price }}</p>
+                      <p style="margin:0; font-size:16px; color:#bdbdbd;">
+                        {{ item.quantity }} Unit{% if item.quantity > 1 %}s{% endif %}
+                        {% if item.size %} | {{ item.size }}{% endif %}
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              {% endfor %}
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

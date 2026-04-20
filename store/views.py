@@ -5,7 +5,8 @@ import stripe
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 from .models import Product, ProductSize, Order, OrderItem
 from .forms import CheckoutForm
@@ -247,11 +248,11 @@ def stripe_webhook(request):
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
         print("Event verified:", event['type'])
-    except ValueError:
-        print("Invalid payload")
+    except ValueError as e:
+        print("Invalid payload:", str(e))
         return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError:
-        print("Invalid signature")
+    except stripe.error.SignatureVerificationError as e:
+        print("Invalid signature:", str(e))
         return HttpResponse(status=400)
 
     if event['type'] == 'checkout.session.completed':
@@ -274,38 +275,30 @@ def stripe_webhook(request):
             print("Order marked as paid")
 
             order_items = order.items.all()
-            item_lines = []
-            for item in order_items:
-                if item.size:
-                    item_lines.append(f"{item.product.name} (Size {item.size}) x {item.quantity} - £{item.price}")
-                else:
-                    item_lines.append(f"{item.product.name} x {item.quantity} - £{item.price}")
-
-            items_text = "\n".join(item_lines)
 
             subject = f"ONVEL Order Confirmation #{order.order_number}"
-            message = (
-                f"Hello {order.full_name},\n\n"
-                f"Thank you for your order from ONVEL.\n\n"
-                f"Order Number: {order.order_number}\n"
-                f"Total Paid: £{order.total_price}\n\n"
-                f"Items:\n{items_text}\n\n"
-                f"Shipping Address:\n"
-                f"{order.address}\n"
-                f"{order.city}\n"
-                f"{order.postcode}\n"
-                f"{order.country}\n\n"
-                f"We’ll send another update when your order is dispatched.\n\n"
-                f"ONVEL"
-            )
 
-            send_mail(
-                subject,
-                message,
-                settings.DEFAULT_FROM_EMAIL,
-                [order.email],
-                fail_silently=False,
-            )
-            print("Email send function ran")
+            context = {
+                'order': order,
+                'order_items': order_items,
+                'tracking_url': 'https://onvel.store/',
+            }
+
+            text_content = render_to_string('store/emails/order_confirmation.txt', context)
+            html_content = render_to_string('store/emails/order_confirmation.html', context)
+
+            try:
+                email = EmailMultiAlternatives(
+                    subject=subject,
+                    body=text_content,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[order.email],
+                )
+                email.attach_alternative(html_content, "text/html")
+                email.send()
+                print("HTML email sent successfully")
+            except Exception as e:
+                print("Email sending failed:", str(e))
+                return HttpResponse(status=500)
 
     return HttpResponse(status=200)
