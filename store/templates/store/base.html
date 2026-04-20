@@ -27,8 +27,13 @@
       align-items: center;
       padding: 20px 40px;
       gap: 20px;
-      flex-wrap: wrap;
       position: relative;
+    }
+
+    .logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .logo a {
@@ -45,13 +50,13 @@
       display: flex;
       align-items: center;
       gap: 20px;
-      flex-wrap: wrap;
       justify-content: flex-end;
     }
 
     .nav-right a,
     .nav-right span,
-    .menu-toggle {
+    .menu-toggle,
+    .cart-mobile {
       text-decoration: none;
       color: black;
       font-size: 14px;
@@ -66,20 +71,27 @@
 
     .nav-right a:hover,
     footer a:hover,
-    .menu-toggle:hover {
+    .menu-toggle:hover,
+    .cart-mobile:hover {
       opacity: 0.7;
     }
 
     .menu-toggle {
       display: none;
-      letter-spacing: 1px;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .cart-mobile {
+      display: none;
+      font-size: 14px;
     }
 
     .mobile-menu {
       display: none;
       position: absolute;
       top: 78px;
-      right: 20px;
+      left: 16px;
       background: #f5f5f5;
       border: 1px solid #d9d9d9;
       min-width: 220px;
@@ -139,20 +151,33 @@
 
     @media (max-width: 768px) {
       header {
-        padding: 18px 20px;
-        flex-wrap: nowrap;
+        display: grid;
+        grid-template-columns: 40px 1fr auto;
+        align-items: center;
+        padding: 14px 16px;
+        gap: 10px;
+      }
+
+      .menu-toggle {
+        display: inline-block;
+        justify-self: start;
+      }
+
+      .logo {
+        justify-self: center;
       }
 
       .logo img {
-        height: 42px;
+        height: 52px;
       }
 
       .nav-right {
         display: none;
       }
 
-      .menu-toggle {
+      .cart-mobile {
         display: inline-block;
+        justify-self: end;
         font-size: 13px;
       }
 
@@ -169,21 +194,26 @@
 
     @media (max-width: 480px) {
       header {
-        padding: 16px;
+        grid-template-columns: 36px 1fr auto;
+        padding: 12px 14px;
       }
 
       .logo img {
-        height: 38px;
+        height: 46px;
       }
 
       .menu-toggle {
-        font-size: 13px;
+        font-size: 24px;
+      }
+
+      .cart-mobile {
+        font-size: 12px;
       }
 
       .mobile-menu {
-        top: 70px;
-        right: 16px;
-        min-width: 200px;
+        top: 64px;
+        left: 14px;
+        min-width: 190px;
       }
 
       .mobile-menu a {
@@ -211,11 +241,15 @@
 <body>
 
 <header>
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
   <div class="logo">
     <a href="{% url 'home' %}">
       <img src="{% static 'store/images/logo.png' %}" alt="ONVEL Logo">
     </a>
   </div>
+
+  <a href="{% url 'cart' %}" class="cart-mobile">CART ({{ cart_count }})</a>
 
   <div class="nav-right">
     <a href="{% url 'home' %}">SHOP</a>
@@ -223,8 +257,6 @@
     <a href="{% url 'contact' %}">CONTACT</a>
     <a href="{% url 'cart' %}">CART ({{ cart_count }})</a>
   </div>
-
-  <button class="menu-toggle" onclick="toggleMenu()">MENU</button>
 
   <div class="mobile-menu" id="mobileMenu">
     <a href="{% url 'home' %}">SHOP</a>
