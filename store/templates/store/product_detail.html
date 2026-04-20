@@ -24,8 +24,6 @@
   #mainImage {
     width: 100%;
     max-width: 500px;
-    height: auto;
-    display: block;
     background: #ddd;
   }
 
@@ -41,43 +39,32 @@
     object-fit: cover;
     cursor: pointer;
     border: 1px solid #ddd;
-    background: #ddd;
   }
 
   .thumbnail-row img:hover {
     border: 1px solid black;
   }
 
+  .product-info {
+    display: flex;
+    flex-direction: column;
+  }
+
   .product-info h1 {
     font-size: 28px;
-    margin: 0 0 20px;
+    margin-bottom: 20px;
     text-transform: uppercase;
     font-family: 'Courier New', monospace;
   }
 
-  .product-info .price {
+  .price {
     font-size: 20px;
     margin-bottom: 20px;
     font-family: 'Courier New', monospace;
   }
 
-  .product-info .description {
-    font-size: 14px;
-    line-height: 1.8;
-    margin-bottom: 30px;
-    text-transform: uppercase;
-    font-family: 'Courier New', monospace;
-  }
-
-  .status {
-    margin-bottom: 25px;
-    font-size: 14px;
-    text-transform: uppercase;
-    font-family: 'Courier New', monospace;
-  }
-
   .size-section {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
   }
 
   .size-label {
@@ -89,12 +76,8 @@
 
   .size-options {
     display: flex;
+    gap: 12px;
     flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .size-options label {
-    cursor: pointer;
   }
 
   .size-options input {
@@ -102,53 +85,66 @@
   }
 
   .size-options span {
-    display: inline-block;
-    padding: 10px 14px;
-    border: 1px solid #000;
-    font-size: 13px;
-    text-transform: uppercase;
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
     font-family: 'Courier New', monospace;
   }
 
   .size-options input:checked + span {
-    background: #000;
-    color: #fff;
+    background: black;
+    color: white;
   }
 
   .size-disabled {
-    display: inline-block;
-    padding: 10px 14px;
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 1px solid #ccc;
     color: #999;
-    font-size: 13px;
+  }
+
+  .status {
+    margin: 10px 0 20px;
+    font-size: 14px;
     text-transform: uppercase;
     font-family: 'Courier New', monospace;
-    cursor: not-allowed;
   }
 
   .buy-btn {
-    padding: 14px 28px;
+    width: 240px;
+    padding: 14px;
     background: black;
     color: white;
     border: none;
-    cursor: pointer;
-    text-transform: uppercase;
     font-family: 'Courier New', monospace;
+    margin-bottom: 25px;
   }
 
   .buy-btn:disabled {
     background: #999;
-    cursor: not-allowed;
+  }
+
+  .description {
+    font-size: 14px;
+    text-transform: uppercase;
+    font-family: 'Courier New', monospace;
+    line-height: 1.7;
   }
 
   @media (max-width: 800px) {
     .product-detail {
       grid-template-columns: 1fr;
+      gap: 25px;
     }
 
     .product-detail-container {
-      padding: 0 20px 40px;
-      margin: 30px auto;
+      padding: 0 20px;
     }
 
     .product-info h1 {
@@ -158,25 +154,87 @@
 </style>
 {% endblock %}
 
+
 {% block content %}
 <div class="product-detail-container">
   <div class="product-detail">
+
+    <!-- IMAGES -->
     <div class="product-images">
       <img id="mainImage" src="{{ product.image.url }}" alt="{{ product.name }}">
 
       <div class="thumbnail-row">
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" onclick="changeImage(this)">
+        <img src="{{ product.image.url }}" onclick="changeImage(this)">
 
         {% for img in product.images.all %}
-          <img src="{{ img.image.url }}" alt="{{ img.alt_text|default:product.name }}" onclick="changeImage(this)">
+          <img src="{{ img.image.url }}" onclick="changeImage(this)">
         {% endfor %}
       </div>
     </div>
 
+    <!-- PRODUCT INFO -->
     <div class="product-info">
+
+      <!-- NAME -->
       <h1>{{ product.name }}</h1>
+
+      <!-- PRICE -->
       <p class="price">£{{ product.price }}</p>
 
+      {% if product.sold_out %}
+
+        <!-- SIZES -->
+        {% if product.sizes.exists %}
+        <div class="size-section">
+          <p class="size-label">SELECT SIZE</p>
+          <div class="size-options">
+            {% for size in product.sizes.all %}
+              <span class="size-disabled">{{ size.size }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- STATUS -->
+        <p class="status">SOLD OUT</p>
+
+        <!-- BUTTON -->
+        <button class="buy-btn" disabled>SOLD OUT</button>
+
+      {% else %}
+
+        <form method="post" action="{% url 'add_to_cart' product.id %}">
+          {% csrf_token %}
+
+          <!-- SIZES -->
+          {% if product.sizes.exists %}
+          <div class="size-section">
+            <p class="size-label">SELECT SIZE</p>
+            <div class="size-options">
+              {% for size in product.sizes.all %}
+                {% if size.stock > 0 %}
+                  <label>
+                    <input type="radio" name="size" value="{{ size.size }}" required>
+                    <span>{{ size.size }}</span>
+                  </label>
+                {% else %}
+                  <span class="size-disabled">{{ size.size }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- STATUS -->
+          <p class="status">AVAILABLE</p>
+
+          <!-- BUTTON -->
+          <button type="submit" class="buy-btn">ADD TO CART</button>
+        </form>
+
+      {% endif %}
+
+      <!-- DESCRIPTION (LAST) -->
       <p class="description">
         {% if product.description %}
           {{ product.description }}
@@ -185,48 +243,13 @@
         {% endif %}
       </p>
 
-      <p class="status">
-        {% if product.sold_out %}
-          SOLD OUT
-        {% else %}
-          AVAILABLE
-        {% endif %}
-      </p>
-
-      {% if product.sold_out %}
-        <button class="buy-btn" disabled>Sold Out</button>
-      {% else %}
-        <form method="post" action="{% url 'add_to_cart' product.id %}">
-          {% csrf_token %}
-
-          {% if product.sizes.exists %}
-            <div class="size-section">
-              <p class="size-label">Select Size</p>
-              <div class="size-options">
-                {% for size in product.sizes.all %}
-                  {% if size.stock > 0 %}
-                    <label>
-                      <input type="radio" name="size" value="{{ size.size }}" required>
-                      <span>{{ size.size }}</span>
-                    </label>
-                  {% else %}
-                    <span class="size-disabled">{{ size.size }}</span>
-                  {% endif %}
-                {% endfor %}
-              </div>
-            </div>
-          {% endif %}
-
-          <button type="submit" class="buy-btn">Add to Cart</button>
-        </form>
-      {% endif %}
     </div>
   </div>
 </div>
 
 <script>
-  function changeImage(element) {
-    document.getElementById("mainImage").src = element.src;
-  }
+function changeImage(el) {
+  document.getElementById("mainImage").src = el.src;
+}
 </script>
 {% endblock %}
