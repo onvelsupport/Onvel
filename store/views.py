@@ -275,13 +275,20 @@ def stripe_webhook(request):
             print("Order marked as paid")
 
             order_items = order.items.all()
+            payment_method_label = get_payment_method_label(session)
 
             subject = f"ONVEL Order Confirmation #{order.order_number}"
 
             context = {
                 'order': order,
                 'order_items': order_items,
-                'tracking_url': 'https://onvel.store/',
+                'tracking_url': 'https://onvel.store/contact/',
+                'payment_method': payment_method_label,
+                'subtotal': order.total_price,
+                'delivery_cost': 0,
+                'delivery_discount': 0,
+                'discount': 0,
+                'total': order.total_price,
             }
 
             text_content = render_to_string('store/emails/order_confirmation.txt', context)

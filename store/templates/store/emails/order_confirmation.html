@@ -1,145 +1,142 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>ONVEL Order Confirmation</title>
-</head>
-<body style="margin:0; padding:0; background:#000000; font-family:Arial, Helvetica, sans-serif; color:#ffffff;">
+<body style="margin:0; padding:0; background:#ffffff; font-family:Arial, sans-serif;">
 
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#000000;">
-    <tr>
-      <td style="text-align:center;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff; padding:20px;">
+  <tr>
+    <td style="text-align:center;">
 
-        <table width="680" cellpadding="0" cellspacing="0" style="max-width:680px; width:100%; background:#000000;">
+      <!-- MAIN CONTAINER -->
+      <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;">
 
-          <!-- 🔥 LOGO -->
-          <tr>
-            <td style="text-align:center; padding:50px 30px 28px;">
-              <img src="https://onvel.store/static/logo.png"
-                   alt="ONVEL"
-                   width="170"
-                   style="display:block; margin:0 auto;">
-            </td>
-          </tr>
+        <!-- LOGO -->
+        <tr>
+          <td style="text-align:center; padding:20px 0;">
+            <img src="https://onvel.store/static/store/images/logo.png" width="120" style="display:block; margin:auto;">
+          </td>
+        </tr>
 
-          <!-- divider -->
-          <tr>
-            <td style="padding:0 20px;">
-              <div style="height:1px; background:#444;"></div>
-            </td>
-          </tr>
+        <!-- TITLE -->
+        <tr>
+          <td style="text-align:center; padding:20px 0;">
+            <h2 style="margin:0; font-size:24px;">Order in progress</h2>
+          </td>
+        </tr>
 
-          <!-- status -->
-          <tr>
-            <td style="padding:38px 55px;">
-              <div style="font-size:28px; font-weight:700;">
-                Order in progress
-              </div>
-            </td>
-          </tr>
+        <!-- ORDER NUMBER -->
+        <tr>
+          <td style="text-align:center; padding:10px 0;">
+            <p style="margin:0; color:#777;">Order number</p>
+            <h1 style="margin:5px 0; color:#2a5ea7;">{{ order.order_number }}</h1>
+          </td>
+        </tr>
 
-          <!-- divider -->
-          <tr>
-            <td style="padding:0 20px;">
-              <div style="height:1px; background:#444;"></div>
-            </td>
-          </tr>
+        <!-- ADDRESS -->
+        <tr>
+          <td style="padding:20px;">
+            <p><strong>Delivery to:</strong></p>
+            <p style="line-height:1.6;">
+              {{ order.address }}<br>
+              {{ order.city }}<br>
+              {{ order.postcode }}<br>
+              {{ order.country }}
+            </p>
+          </td>
+        </tr>
 
-          <!-- order details -->
-          <tr>
-            <td style="padding:40px 55px 20px;">
+        <!-- INFO BOX -->
+        <tr>
+          <td style="padding:20px;">
+            <div style="background:#f2f2f2; padding:15px; text-align:center;">
+              We will notify you by email once your order is ready for dispatch.
+            </div>
+          </td>
+        </tr>
 
-              <div style="font-size:16px; color:#bbbbbb;">Order number</div>
+        <!-- BUTTON -->
+        <tr>
+          <td style="text-align:center; padding:20px;">
+            <a href="{{ tracking_url }}" 
+               style="background:#000; color:#fff; padding:15px 30px; text-decoration:none; display:inline-block;">
+               Track my order
+            </a>
+          </td>
+        </tr>
 
-              <div style="font-size:38px; color:#7eaef7; margin:15px 0 35px;">
-                {{ order.order_number }}
-              </div>
+        <!-- PRODUCTS -->
+        {% for item in order_items %}
+        <tr>
+          <td style="padding:20px; border-top:1px solid #eee;">
+            <table width="100%">
+              <tr>
 
-              <div style="font-size:16px; color:#bbbbbb;">Delivery to:</div>
+                <!-- IMAGE -->
+                <td width="120">
+                  <img src="{{ item.product.image.url }}" width="100" style="display:block;">
+                </td>
 
-              <div style="font-size:22px; line-height:1.9; color:#7eaef7; margin-top:15px;">
-                {{ order.address }}<br>
-                {{ order.city }}<br>
-                {{ order.postcode }}<br>
-                {{ order.country }}
-              </div>
+                <!-- DETAILS -->
+                <td>
+                  <p style="margin:0;"><strong>{{ item.product.name }}</strong></p>
+                  <p style="margin:5px 0;">£{{ item.price }}</p>
+                  <p style="margin:5px 0; color:#777;">
+                    {{ item.quantity }} Unit 
+                    {% if item.size %}| {{ item.size }}{% endif %}
+                  </p>
+                </td>
 
-            </td>
-          </tr>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        {% endfor %}
 
-          <!-- grey message box -->
-          <tr>
-            <td style="padding:30px 55px;">
-              <table width="100%" cellpadding="0" cellspacing="0" style="background:#2a2a2a;">
-                <tr>
-                  <td style="padding:22px; font-size:16px;">
-                    We will notify you by email once your order is ready for dispatch.
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+        <!-- TOTALS -->
+        <tr>
+          <td style="padding:20px; border-top:1px solid #eee;">
+            <table width="100%">
 
-          <!-- button -->
-          <tr>
-            <td style="padding:0 55px 50px;">
-              <a href="{{ tracking_url }}"
-                 style="display:block; text-align:center; background:#f2f2f2; color:#111; text-decoration:none; padding:20px; font-size:22px;">
-                Track my order
-              </a>
-            </td>
-          </tr>
+              <tr>
+                <td>Payment method</td>
+                <td style="text-align:right;">{{ payment_method }}</td>
+              </tr>
 
-          <!-- divider -->
-          <tr>
-            <td style="padding:0 20px;">
-              <div style="height:1px; background:#444;"></div>
-            </td>
-          </tr>
+              <tr>
+                <td>Subtotal</td>
+                <td style="text-align:right;">£{{ subtotal }}</td>
+              </tr>
 
-          <!-- items -->
-          <tr>
-            <td style="padding:40px 55px;">
+              <tr>
+                <td>Delivery Costs</td>
+                <td style="text-align:right;">£{{ delivery_cost }}</td>
+              </tr>
 
-              {% for item in order_items %}
-              <table width="100%" style="margin-bottom:30px;">
-                <tr>
+              <tr>
+                <td>Delivery Discount</td>
+                <td style="text-align:right;">-£{{ delivery_discount }}</td>
+              </tr>
 
-                  <td width="130">
-                    {% if item.product.image %}
-                    <img src="{{ item.product.image.url }}" width="120" style="display:block;">
-                    {% endif %}
-                  </td>
+              <tr>
+                <td>Discount</td>
+                <td style="text-align:right;">-£{{ discount }}</td>
+              </tr>
 
-                  <td style="padding-left:20px;">
+              <tr>
+                <td style="padding-top:15px;"><strong>TOTAL</strong></td>
+                <td style="text-align:right; padding-top:15px;">
+                  <strong>£{{ total }}</strong>
+                </td>
+              </tr>
 
-                    <div style="font-size:22px; margin-bottom:10px;">
-                      {{ item.product.name }}
-                    </div>
+            </table>
+          </td>
+        </tr>
 
-                    <div style="font-size:20px; margin-bottom:10px;">
-                      £{{ item.price }}
-                    </div>
+      </table>
 
-                    <div style="font-size:16px; color:#bbbbbb;">
-                      {{ item.quantity }} Unit{% if item.quantity > 1 %}s{% endif %}
-                      {% if item.size %} | {{ item.size }}{% endif %}
-                    </div>
-
-                  </td>
-
-                </tr>
-              </table>
-              {% endfor %}
-
-            </td>
-          </tr>
-
-        </table>
-
-      </td>
-    </tr>
-  </table>
+    </td>
+  </tr>
+</table>
 
 </body>
 </html>
