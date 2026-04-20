@@ -29,6 +29,19 @@ class ProductImage(models.Model):
         return f"{self.product.name} Image"
 
 
+class ProductSize(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='sizes')
+    size = models.CharField(max_length=20)
+    stock = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('product', 'size')
+        ordering = ['size']
+
+    def __str__(self):
+        return f"{self.product.name} - {self.size}"
+
+
 class Order(models.Model):
     full_name = models.CharField(max_length=200)
     email = models.EmailField()
@@ -52,8 +65,11 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    size = models.CharField(max_length=20, blank=True, null=True)
     quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
+        if self.size:
+            return f"{self.product.name} ({self.size}) x {self.quantity}"
         return f"{self.product.name} x {self.quantity}"

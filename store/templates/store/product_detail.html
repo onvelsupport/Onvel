@@ -52,11 +52,13 @@
     font-size: 28px;
     margin: 0 0 20px;
     text-transform: uppercase;
+    font-family: 'Courier New', monospace;
   }
 
   .product-info .price {
     font-size: 20px;
     margin-bottom: 20px;
+    font-family: 'Courier New', monospace;
   }
 
   .product-info .description {
@@ -64,22 +66,64 @@
     line-height: 1.8;
     margin-bottom: 30px;
     text-transform: uppercase;
+    font-family: 'Courier New', monospace;
   }
 
   .status {
     margin-bottom: 25px;
     font-size: 14px;
     text-transform: uppercase;
+    font-family: 'Courier New', monospace;
   }
 
-  .buy-btn-link {
-    display: inline-block;
-    padding: 14px 28px;
-    background: black;
-    color: white;
-    text-decoration: none;
+  .size-section {
+    margin-bottom: 25px;
+  }
+
+  .size-label {
+    font-size: 14px;
+    margin-bottom: 10px;
     text-transform: uppercase;
     font-family: 'Courier New', monospace;
+  }
+
+  .size-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .size-options label {
+    cursor: pointer;
+  }
+
+  .size-options input {
+    display: none;
+  }
+
+  .size-options span {
+    display: inline-block;
+    padding: 10px 14px;
+    border: 1px solid #000;
+    font-size: 13px;
+    text-transform: uppercase;
+    font-family: 'Courier New', monospace;
+  }
+
+  .size-options input:checked + span {
+    background: #000;
+    color: #fff;
+  }
+
+  .size-disabled {
+    display: inline-block;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    color: #999;
+    font-size: 13px;
+    text-transform: uppercase;
+    font-family: 'Courier New', monospace;
+    cursor: not-allowed;
   }
 
   .buy-btn {
@@ -100,6 +144,15 @@
   @media (max-width: 800px) {
     .product-detail {
       grid-template-columns: 1fr;
+    }
+
+    .product-detail-container {
+      padding: 0 20px 40px;
+      margin: 30px auto;
+    }
+
+    .product-info h1 {
+      font-size: 22px;
     }
   }
 </style>
@@ -143,7 +196,29 @@
       {% if product.sold_out %}
         <button class="buy-btn" disabled>Sold Out</button>
       {% else %}
-        <a href="{% url 'add_to_cart' product.id %}" class="buy-btn-link">Add to Cart</a>
+        <form method="post" action="{% url 'add_to_cart' product.id %}">
+          {% csrf_token %}
+
+          {% if product.sizes.exists %}
+            <div class="size-section">
+              <p class="size-label">Select Size</p>
+              <div class="size-options">
+                {% for size in product.sizes.all %}
+                  {% if size.stock > 0 %}
+                    <label>
+                      <input type="radio" name="size" value="{{ size.size }}" required>
+                      <span>{{ size.size }}</span>
+                    </label>
+                  {% else %}
+                    <span class="size-disabled">{{ size.size }}</span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          <button type="submit" class="buy-btn">Add to Cart</button>
+        </form>
       {% endif %}
     </div>
   </div>

@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 
-from .models import Product, Order, OrderItem
+from .models import Product, ProductSize, Order, OrderItem
 from .forms import CheckoutForm
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -26,15 +26,36 @@ def product_detail(request, slug):
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
-    cart = request.session.get('cart', {})
-    product_id_str = str(product_id)
+    if request.method != 'POST':
+        return redirect('product_detail', slug=product.slug)
 
-    if product_id_str in cart:
-        cart[product_id_str] += 1
+    selected_size = request.POST.get('size', '').strip()
+
+    if product.sizes.exists():
+        if not selected_size:
+            return redirect('product_detail', slug=product.slug)
+
+        size_obj = get_object_or_404(ProductSize, product=product, size=selected_size)
+
+        if size_obj.stock < 1:
+            return redirect('product_detail', slug=product.slug)
     else:
-        cart[product_id_str] = 1
+        selected_size = None
+
+    cart = request.session.get('cart', {})
+    cart_key = f"{product_id}_{selected_size}" if selected_size else str(product_id)
+
+    if cart_key in cart:
+        cart[cart_key]['quantity'] += 1
+    else:
+        cart[cart_key] = {
+            'product_id': product_id,
+            'size': selected_size,
+            'quantity': 1,
+        }
 
     request.session['cart'] = cart
+    request.session.modified = True
     return redirect('cart')
 
 
@@ -43,13 +64,18 @@ def cart_view(request):
     cart_items = []
     total = Decimal('0.00')
 
-    for product_id, quantity in cart.items():
-        product = get_object_or_404(Product, id=product_id)
+    for cart_key, item_data in cart.items():
+        product = get_object_or_404(Product, id=item_data['product_id'])
+        quantity = int(item_data['quantity'])
+        size = item_data.get('size')
+
         item_total = product.price * quantity
         total += item_total
 
         cart_items.append({
+            'cart_key': cart_key,
             'product': product,
+            'size': size,
             'quantity': quantity,
             'item_total': item_total,
         })
@@ -60,31 +86,32 @@ def cart_view(request):
     })
 
 
-def remove_from_cart(request, product_id):
+def remove_from_cart(request, cart_key):
     cart = request.session.get('cart', {})
-    product_id_str = str(product_id)
 
-    if product_id_str in cart:
-        del cart[product_id_str]
+    if cart_key in cart:
+        del cart[cart_key]
 
     request.session['cart'] = cart
+    request.session.modified = True
     return redirect('cart')
 
 
-def update_cart_quantity(request, product_id, action):
+def update_cart_quantity(request, cart_key, action):
     cart = request.session.get('cart', {})
-    product_id_str = str(product_id)
 
-    if product_id_str in cart:
+    if cart_key in cart:
         if action == 'increase':
-            cart[product_id_str] += 1
-        elif action == 'decrease':
-            cart[product_id_str] -= 1
+            cart[cart_key]['quantity'] += 1
 
-            if cart[product_id_str] <= 0:
-                del cart[product_id_str]
+        elif action == 'decrease':
+            cart[cart_key]['quantity'] -= 1
+
+            if cart[cart_key]['quantity'] <= 0:
+                del cart[cart_key]
 
     request.session['cart'] = cart
+    request.session.modified = True
     return redirect('cart')
 
 
@@ -112,13 +139,18 @@ def checkout_view(request):
     if not cart:
         return redirect('cart')
 
-    for product_id, quantity in cart.items():
-        product = get_object_or_404(Product, id=product_id)
+    for cart_key, item_data in cart.items():
+        product = get_object_or_404(Product, id=item_data['product_id'])
+        quantity = int(item_data['quantity'])
+        size = item_data.get('size')
+
         item_total = product.price * quantity
         total += item_total
 
         cart_items.append({
+            'cart_key': cart_key,
             'product': product,
+            'size': size,
             'quantity': quantity,
             'item_total': item_total,
         })
@@ -140,17 +172,22 @@ def checkout_view(request):
                 OrderItem.objects.create(
                     order=order,
                     product=item['product'],
+                    size=item['size'],
                     quantity=item['quantity'],
                     price=item['product'].price,
                 )
 
             line_items = []
             for item in cart_items:
+                product_name = item['product'].name
+                if item['size']:
+                    product_name = f"{product_name} - Size {item['size']}"
+
                 line_items.append({
                     'price_data': {
                         'currency': 'gbp',
                         'product_data': {
-                            'name': item['product'].name,
+                            'name': product_name,
                         },
                         'unit_amount': int(item['product'].price * 100),
                     },
@@ -195,6 +232,7 @@ def checkout_view(request):
 
 def checkout_success(request):
     request.session['cart'] = {}
+    request.session.modified = True
     return render(request, 'store/checkout_success.html')
 
 
@@ -238,7 +276,10 @@ def stripe_webhook(request):
             order_items = order.items.all()
             item_lines = []
             for item in order_items:
-                item_lines.append(f"{item.product.name} x {item.quantity} - £{item.price}")
+                if item.size:
+                    item_lines.append(f"{item.product.name} (Size {item.size}) x {item.quantity} - £{item.price}")
+                else:
+                    item_lines.append(f"{item.product.name} x {item.quantity} - £{item.price}")
 
             items_text = "\n".join(item_lines)
 
