@@ -15,6 +15,13 @@ Items:
 - {{ item.product.name }}{% if item.size %} ({{ item.size }}){% endif %} x {{ item.quantity }} - £{{ item.price }}
 {% endfor %}
 
+Payment method: {{ payment_method }}
+Subtotal: £{{ subtotal }}
+Delivery Costs: £{{ delivery_cost }}
+Delivery discount: -£{{ delivery_discount }}
+Discount: -£{{ discount }}
+Total: £{{ total }}
+
 Track your order:
 {{ tracking_url }}
 
