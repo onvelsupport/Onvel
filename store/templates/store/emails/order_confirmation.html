@@ -91,52 +91,64 @@
         </tr>
         {% endfor %}
 
-        <!-- TOTALS -->
-        <tr>
-          <td style="padding:20px; border-top:1px solid #eee;">
-            <table width="100%">
+ <!-- DIVIDER -->
+<tr>
+  <td style="padding:20px 0;">
+    <hr style="border:none; border-top:1px solid #eee;">
+  </td>
+</tr>
 
-              <tr>
-                <td>Payment method</td>
-                <td style="text-align:right;">{{ payment_method }}</td>
-              </tr>
+<!-- TOTALS -->
+<tr>
+  <td style="padding:0 20px 20px 20px;">
+    <table width="100%" style="font-size:14px; color:#555;">
 
-              <tr>
-                <td>Subtotal</td>
-                <td style="text-align:right;">£{{ subtotal }}</td>
-              </tr>
+      <tr>
+        <td style="padding:6px 0;">Payment method</td>
+        <td style="text-align:right; padding:6px 0;">{{ payment_method }}</td>
+      </tr>
 
-              <tr>
-                <td>Delivery Costs</td>
-                <td style="text-align:right;">£{{ delivery_cost }}</td>
-              </tr>
+      <tr>
+        <td style="padding:6px 0;">Subtotal</td>
+        <td style="text-align:right; padding:6px 0;">£{{ subtotal }}</td>
+      </tr>
 
-              <tr>
-                <td>Delivery Discount</td>
-                <td style="text-align:right;">-£{{ delivery_discount }}</td>
-              </tr>
+      <tr>
+        <td style="padding:6px 0;">Delivery Costs</td>
+        <td style="text-align:right; padding:6px 0;">£{{ delivery_cost }}</td>
+      </tr>
 
-              <tr>
-                <td>Discount</td>
-                <td style="text-align:right;">-£{{ discount }}</td>
-              </tr>
+      <tr>
+        <td style="padding:6px 0;">Delivery discount</td>
+        <td style="text-align:right; padding:6px 0;">-£{{ delivery_discount }}</td>
+      </tr>
 
-              <tr>
-                <td style="padding-top:15px;"><strong>TOTAL</strong></td>
-                <td style="text-align:right; padding-top:15px;">
-                  <strong>£{{ total }}</strong>
-                </td>
-              </tr>
+      <tr>
+        <td style="padding:6px 0;">Discount</td>
+        <td style="text-align:right; padding:6px 0;">-£{{ discount }}</td>
+      </tr>
 
-            </table>
-          </td>
-        </tr>
+    </table>
+  </td>
+</tr>
 
-      </table>
+<!-- TOTAL -->
+<tr>
+  <td style="padding:0 20px 20px 20px;">
+    <table width="100%">
+      <tr>
+        <td style="font-size:16px; font-weight:bold;">TOTAL</td>
+        <td style="text-align:right; font-size:18px; font-weight:bold;">
+          £{{ total }}
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
 
-    </td>
-  </tr>
-</table>
-
-</body>
-</html>
+<!-- BOTTOM DIVIDER -->
+<tr>
+  <td style="padding:10px 0;">
+    <hr style="border:none; border-top:1px solid #eee;">
+  </td>
+</tr>
