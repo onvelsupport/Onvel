@@ -56,7 +56,7 @@ class Order(models.Model):
 
     @property
     def order_number(self):
-        return f"ONV{self.id:05d}"
+        return f"SLK{self.id:05d}"
 
     def __str__(self):
         return f"Order {self.order_number} - {self.full_name}"
