@@ -69,12 +69,12 @@ def send_order_confirmation_email(order, session):
     order_items = order.items.all()
     payment_method_label = get_payment_method_label(session)
 
-    subject = f"ONVEL Order Confirmation #{order.order_number}"
+    subject = f"SLK Order Confirmation #{order.order_number}"
 
     context = {
         'order': order,
         'order_items': order_items,
-        'tracking_url': 'https://onvel.store/contact/',
+        'tracking_url': 'https://slickback.shop/contact/',
         'payment_method': payment_method_label,
         'subtotal': order.total_price,
         'delivery_cost': 0,

@@ -1,6 +1,6 @@
 Hello {{ order.full_name }},
 
-Thank you for your order from ONVEL.
+Thank you for your order from SLK.
 
 Order Number: {{ order.order_number }}
 
@@ -18,4 +18,4 @@ Items:
 Track your order:
 {{ tracking_url }}
 
-ONVEL
+SLK
