@@ -11,9 +11,11 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    "slickback.shop",
-    "www.slickback.shop",
-    ".onrender.com"
+    '127.0.0.1',
+    'localhost',
+    'slickback.shop',
+    'www.slickback.shop',
+    '.onrender.com',
 ]
 
 INSTALLED_APPS = [
