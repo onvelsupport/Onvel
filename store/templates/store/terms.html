@@ -1,86 +1,202 @@
 {% extends 'store/base.html' %}
 
+{% block title %}Terms & Conditions | SLICKBACK{% endblock %}
+
 {% block extra_css %}
 <style>
 .page-title {
   text-align: center;
-  font-family: 'Courier New', cursive;
+  font-family: 'Courier New', monospace;
   font-size: 36px;
-  margin-top: 40px;
-}
-
-.container {
-  max-width: 900px;
-  margin: 50px auto;
-  padding: 20px;
-}
-
-.container h2 {
-  margin-top: 40px;
-  font-size: 20px;
-}
-
-.container p {
-  font-size: 16px;
-  line-height: 1.8;
+  margin: 40px 0 60px;
   text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.terms-container {
+  max-width: 900px;
+  margin: 0 auto 80px;
+  padding: 0 40px;
+}
+
+.terms-container h2 {
+  font-family: 'Courier New', monospace;
+  font-size: 22px;
+  margin-top: 45px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.terms-container p {
+  font-family: 'Courier New', monospace;
+  font-size: 18px;
+  line-height: 1.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
 }
 
 hr {
   margin: 40px 0;
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 24px;
+    margin: 20px 0 40px;
+  }
+
+  .terms-container {
+    padding: 0 24px;
+  }
+
+  .terms-container h2 {
+    font-size: 18px;
+  }
+
+  .terms-container p {
+    font-size: 16px;
+    line-height: 1.8;
+  }
 }
 </style>
 {% endblock %}
 
 {% block content %}
 
-<h1 class="page-title">TERMS AND CONDITIONS</h1>
+<h1 class="page-title">Terms & Conditions</h1>
 
-<div class="container">
+<div class="terms-container">
 
-  <h2>ACCEPTANCE OF TERMS</h2>
   <p>
-    BY USING THIS WEBSITE, YOU AGREE TO COMPLY WITH AND BE BOUND BY THESE TERMS AND CONDITIONS.
-    IF YOU DO NOT AGREE WITH ANY PART OF THESE TERMS, PLEASE DO NOT USE OUR WEBSITE.
+    LAST UPDATED: JUNE 2026
+  </p>
+
+  <h2>1. Acceptance Of Terms</h2>
+
+  <p>
+    BY ACCESSING OR USING SLICKBACK.SHOP, YOU AGREE TO BE BOUND BY
+    THESE TERMS AND CONDITIONS. IF YOU DO NOT AGREE WITH ANY PART OF
+    THESE TERMS, PLEASE DO NOT USE THIS WEBSITE.
   </p>
 
   <hr>
 
-  <h2>SHIPPING</h2>
+  <h2>2. Products & Orders</h2>
+
   <p>
-    PLEASE ALLOW 1 WORKING DAY FOR ORDER PROCESSING AND 1–2 DAYS FOR SHIPMENT DELIVERY
+    ALL PRODUCTS DISPLAYED ON SLICKBACK.SHOP ARE SUBJECT TO
+    AVAILABILITY.
   </p>
 
   <p>
-    YOU WILL BE NOTIFIED VIA EMAIL ONCE YOUR ORDER HAS BEEN SHIPPED.
-  </p>
-
-  <p>
-    WE ARE NOT RESPONSIBLE FOR ANY STOLEN, DAMAGED, OR LOST PACKAGES ONCE THEY HAVE BEEN SHIPPED.
-  </p>
-
-  <p>
-    WE ARE NOT RESPONSIBLE FOR RETURNED PACKAGES DUE TO AN INCORRECT ADDRESS.
-    PLEASE ENSURE THE CORRECT ADDRESS IS ENTERED TO AVOID RESHIPPING FEES BEING CHARGED.
-  </p>
-
-  <p>
-    WE ARE NOT RESPONSIBLE FOR THE HANDLING OF IMPORT FEES FOR INTERNATIONAL ORDERS.
+    WE RESERVE THE RIGHT TO REFUSE, CANCEL, OR LIMIT ANY ORDER
+    FOR REASONS INCLUDING SUSPECTED FRAUD, PRODUCT AVAILABILITY,
+    OR ERRORS IN PRODUCT INFORMATION OR PRICING.
   </p>
 
   <hr>
 
-  <h2>RETURN POLICY</h2>
+  <h2>3. Pricing & Payments</h2>
+
   <p>
-    IF YOUR ORDER IS DEFECTIVE, INCORRECT, OR INCOMPLETE PLEASE CONTACT
-    SLICKBACK.SHOP@GMAIL.COM WITHIN 48 HOURS OF DELIVERY SO WE MAY APPROPRIATELY REMEDY THE ISSUE FOR YOU
+    ALL PRICES DISPLAYED ON THE WEBSITE ARE SHOWN IN THE APPLICABLE
+    CURRENCY AT CHECKOUT.
+  </p>
+
+  <p>
+    PAYMENTS ARE PROCESSED SECURELY THROUGH AUTHORISED PAYMENT
+    PROVIDERS INCLUDING STRIPE.
   </p>
 
   <hr>
 
-  <h2>CONTACT US</h2>
+  <h2>4. Shipping & Delivery</h2>
+
   <p>
-    IF YOU HAVE ANY QUESTIONS ABOUT YOUR ORDER, PLEASE EMAIL US AT SLICKBACK.SHOP@GMAIL.COM
+    ORDERS ARE TYPICALLY PROCESSED WITHIN 1 WORKING DAY.
+  </p>
+
+  <p>
+    ESTIMATED DELIVERY TIMES ARE 1–2 WORKING DAYS AFTER DISPATCH,
+    HOWEVER DELIVERY TIMES ARE ESTIMATES AND MAY BE AFFECTED BY
+    COURIER DELAYS OR CIRCUMSTANCES OUTSIDE OUR CONTROL.
+  </p>
+
+  <p>
+    CUSTOMERS WILL RECEIVE SHIPPING CONFIRMATION ONCE AN ORDER
+    HAS BEEN DISPATCHED.
+  </p>
+
+  <p>
+    CUSTOMERS ARE RESPONSIBLE FOR PROVIDING ACCURATE SHIPPING
+    INFORMATION. WE ARE NOT RESPONSIBLE FOR DELAYS OR LOSSES
+    RESULTING FROM INCORRECT ADDRESS DETAILS PROVIDED AT CHECKOUT.
+  </p>
+
+  <hr>
+
+  <h2>5. Returns & Refunds</h2>
+
+  <p>
+    RETURNS AND REFUNDS ARE GOVERNED BY OUR REFUND POLICY.
+  </p>
+
+  <p>
+    IF AN ORDER ARRIVES DEFECTIVE, INCORRECT, OR INCOMPLETE,
+    CUSTOMERS SHOULD CONTACT US WITHIN 48 HOURS OF DELIVERY.
+  </p>
+
+  <hr>
+
+  <h2>6. Intellectual Property</h2>
+
+  <p>
+    ALL CONTENT ON THIS WEBSITE, INCLUDING TEXT, IMAGES, LOGOS,
+    PRODUCT DESIGNS, GRAPHICS, AND BRANDING, IS THE PROPERTY OF
+    SLICKBACK OR ITS LICENSORS AND MAY NOT BE REPRODUCED WITHOUT
+    WRITTEN PERMISSION.
+  </p>
+
+  <hr>
+
+  <h2>7. Limitation Of Liability</h2>
+
+  <p>
+    TO THE MAXIMUM EXTENT PERMITTED BY LAW, SLICKBACK SHALL NOT
+    BE LIABLE FOR ANY INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+    DAMAGES ARISING FROM THE USE OF THIS WEBSITE OR THE PURCHASE
+    OF PRODUCTS THROUGH IT.
+  </p>
+
+  <hr>
+
+  <h2>8. Privacy</h2>
+
+  <p>
+    YOUR USE OF THIS WEBSITE IS ALSO GOVERNED BY OUR PRIVACY POLICY.
+  </p>
+
+  <hr>
+
+  <h2>9. Changes To These Terms</h2>
+
+  <p>
+    WE RESERVE THE RIGHT TO UPDATE OR MODIFY THESE TERMS AT ANY
+    TIME. UPDATED TERMS WILL BE POSTED ON THIS PAGE.
+  </p>
+
+  <hr>
+
+  <h2>10. Contact Information</h2>
+
+  <p>
+    FOR QUESTIONS REGARDING THESE TERMS OR YOUR ORDER, PLEASE
+    CONTACT:
+  </p>
+
+  <p>
+    SLICKBACK.SHOP@GMAIL.COM
   </p>
 
 </div>
