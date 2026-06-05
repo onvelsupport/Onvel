@@ -1,5 +1,7 @@
 {% extends 'store/base.html' %}
 
+{% block title %}Contact Us | SLICKBACK{% endblock %}
+
 {% block extra_css %}
 <style>
   .page-title {
@@ -14,7 +16,7 @@
 
   .contact-container {
     max-width: 900px;
-    margin: 0 auto;
+    margin: 0 auto 80px;
     padding: 0 40px;
     text-align: center;
   }
@@ -22,15 +24,25 @@
   .contact-container p {
     font-family: 'Courier New', monospace;
     font-size: 18px;
-    line-height: 1.8;
+    line-height: 1.9;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    margin-bottom: 25px;
   }
 
   .contact-container a {
     color: black;
     text-decoration: underline;
     word-break: break-word;
+  }
+
+  .contact-section {
+    margin-top: 50px;
+  }
+
+  .contact-label {
+    font-weight: bold;
+    margin-bottom: 10px;
   }
 
   @media (max-width: 768px) {
@@ -55,14 +67,40 @@
 
 {% block content %}
 
-<h1 class="page-title">Contact Information</h1>
+<h1 class="page-title">Contact Us</h1>
 
 <div class="contact-container">
-  <p>
-    FOR ANY ENQUIRIES CONTACT
-    <a href="mailto:SLICKBACK.SHOP@GMAIL.COM">SLICKBACK.SHOP@GMAIL.COM</a>
-  </p>
-</div>
 
+  <p>
+    OUR CUSTOMER SUPPORT TEAM IS AVAILABLE TO ASSIST WITH
+    PRODUCT QUESTIONS, ORDER ENQUIRIES, SHIPPING UPDATES,
+    RETURNS, AND GENERAL SUPPORT.
+  </p>
+
+  <div class="contact-section">
+    <p class="contact-label">EMAIL</p>
+    <p>
+      <a href="mailto:slickback.shop@gmail.com">
+        SLICKBACK.SHOP@GMAIL.COM
+      </a>
+    </p>
+  </div>
+
+  <div class="contact-section">
+    <p class="contact-label">RESPONSE TIME</p>
+    <p>
+      WE AIM TO RESPOND TO ALL ENQUIRIES WITHIN 24–48 HOURS.
+    </p>
+  </div>
+
+  <div class="contact-section">
+    <p class="contact-label">CUSTOMER SUPPORT</p>
+    <p>
+      FOR QUESTIONS REGARDING ORDERS, SHIPPING,
+      RETURNS, OR PRODUCTS, PLEASE CONTACT US VIA EMAIL.
+    </p>
+  </div>
+
+</div>
 
 {% endblock %}
