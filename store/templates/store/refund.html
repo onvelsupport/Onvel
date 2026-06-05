@@ -1,45 +1,140 @@
 {% extends 'store/base.html' %}
 
+{% block title %}Refund Policy | SLICKBACK{% endblock %}
+
 {% block extra_css %}
 <style>
 .page-title {
   text-align: center;
-  font-family: 'Courier New', cursive;
+  font-family: 'Courier New', monospace;
   font-size: 36px;
-  margin-top: 40px;
+  margin: 40px 0 60px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
-.container {
+.refund-container {
   max-width: 900px;
-  margin: 80px auto;
-  padding: 20px;
+  margin: 0 auto 80px;
+  padding: 0 40px;
   text-align: center;
 }
 
-.container p {
-  font-size: 18px;
-  line-height: 1.8;
+.refund-container h2 {
+  font-family: 'Courier New', monospace;
+  font-size: 22px;
+  margin-top: 45px;
+  margin-bottom: 15px;
   text-transform: uppercase;
-  margin-bottom: 30px;
 }
 
-.bold {
-  font-weight: bold;
+.refund-container p {
+  font-family: 'Courier New', monospace;
+  font-size: 18px;
+  line-height: 1.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 25px;
+}
+
+.refund-container a {
+  color: black;
+  text-decoration: underline;
+  word-break: break-word;
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 24px;
+    margin: 20px 0 40px;
+  }
+
+  .refund-container {
+    padding: 0 24px;
+  }
+
+  .refund-container h2 {
+    font-size: 18px;
+  }
+
+  .refund-container p {
+    font-size: 16px;
+    line-height: 1.8;
+  }
 }
 </style>
 {% endblock %}
 
 {% block content %}
 
-<h1 class="page-title">REFUND POLICY</h1>
+<h1 class="page-title">Refund Policy</h1>
 
-<div class="container">
-
-  <p class="bold">ALL SALES ARE FINAL.</p>
+<div class="refund-container">
 
   <p>
-    IF YOUR ORDER IS DEFECTIVE, INCORRECT, OR INCOMPLETE PLEASE CONTACT
-    SLICKBACK.SHOP@GMAIL.COM WITHIN 48 HOURS OF DELIVERY SO WE MAY APPROPRIATELY REMEDY THE ISSUE FOR YOU.
+    LAST UPDATED: JUNE 2026
+  </p>
+
+  <p>
+    AT SLICKBACK, WE WANT CUSTOMERS TO SHOP WITH CONFIDENCE. THIS REFUND
+    POLICY EXPLAINS WHEN REFUNDS, RETURNS, OR REPLACEMENTS MAY BE
+    AVAILABLE.
+  </p>
+
+  <h2>1. Returns</h2>
+
+  <p>
+    CUSTOMERS MAY REQUEST A RETURN WITHIN 14 DAYS OF RECEIVING THEIR
+    ORDER, PROVIDED THE ITEM IS UNUSED, UNDAMAGED, IN ITS ORIGINAL
+    CONDITION, AND RETURNED WITH ORIGINAL PACKAGING WHERE APPLICABLE.
+  </p>
+
+  <h2>2. Non-Returnable Items</h2>
+
+  <p>
+    ITEMS THAT HAVE BEEN WORN, USED, DAMAGED, ALTERED, OR RETURNED
+    WITHOUT ORIGINAL PACKAGING MAY NOT BE ELIGIBLE FOR A REFUND.
+  </p>
+
+  <h2>3. Defective, Incorrect, Or Incomplete Orders</h2>
+
+  <p>
+    IF YOUR ORDER ARRIVES DEFECTIVE, INCORRECT, OR INCOMPLETE, PLEASE
+    CONTACT US WITHIN 48 HOURS OF DELIVERY. WE MAY REQUEST PHOTOS OR
+    OTHER EVIDENCE TO HELP RESOLVE THE ISSUE.
+  </p>
+
+  <h2>4. Refunds</h2>
+
+  <p>
+    ONCE A RETURN IS RECEIVED AND INSPECTED, WE WILL NOTIFY YOU WHETHER
+    YOUR REFUND HAS BEEN APPROVED. APPROVED REFUNDS WILL BE PROCESSED
+    BACK TO THE ORIGINAL PAYMENT METHOD.
+  </p>
+
+  <h2>5. Shipping Costs</h2>
+
+  <p>
+    ORIGINAL SHIPPING COSTS MAY BE NON-REFUNDABLE UNLESS THE RETURN IS
+    DUE TO OUR ERROR, A DEFECTIVE ITEM, OR AN INCORRECT ITEM BEING SENT.
+    CUSTOMERS MAY BE RESPONSIBLE FOR RETURN SHIPPING COSTS.
+  </p>
+
+  <h2>6. Exchanges And Replacements</h2>
+
+  <p>
+    WHERE AVAILABLE, WE MAY OFFER A REPLACEMENT OR EXCHANGE FOR DEFECTIVE,
+    INCORRECT, OR DAMAGED ITEMS.
+  </p>
+
+  <h2>7. How To Contact Us</h2>
+
+  <p>
+    TO REQUEST A RETURN, REFUND, EXCHANGE, OR REPLACEMENT, CONTACT US AT:
+  </p>
+
+  <p>
+    <a href="mailto:slickback.shop@gmail.com">SLICKBACK.SHOP@GMAIL.COM</a>
   </p>
 
 </div>
