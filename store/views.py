@@ -2,6 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
 from decimal import Decimal
 import stripe
+import uuid
+import requests
+
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -262,18 +265,21 @@ def checkout_view(request):
                     price=item['product'].price,
                 )
 
-            # Square (placeholder for now)
             if payment_method == "square":
-                order.delete()
+                try:
+                    square_url = create_square_payment_link(request, order)
+                    return redirect(square_url)
 
-                return render(request, 'store/checkout.html', {
-                    'form': form,
-                    'cart_items': cart_items,
-                    'total': total,
-                    'error': 'Square checkout is not connected yet.',
-                })
+                except Exception as e:
+                    order.delete()
 
-            # Stripe checkout
+                    return render(request, 'store/checkout.html', {
+                        'form': form,
+                        'cart_items': cart_items,
+                        'total': total,
+                        'error': f"Square checkout error: {str(e)}",
+                    })
+
             line_items = []
 
             for item in cart_items:
@@ -397,3 +403,71 @@ def stripe_webhook(request):
     except Exception as e:
         print("Webhook unexpected error:", str(e))
         return HttpResponse(status=200)
+    
+
+
+def create_square_payment_link(request, order):
+    if settings.SQUARE_ENVIRONMENT == "production":
+        base_url = "https://connect.squareup.com"
+    else:
+        base_url = "https://connect.squareupsandbox.com"
+
+    url = f"{base_url}/v2/online-checkout/payment-links"
+
+    headers = {
+        "Authorization": f"Bearer {settings.SQUARE_ACCESS_TOKEN}",
+        "Content-Type": "application/json",
+        "Square-Version": "2026-05-21",
+    }
+
+    data = {
+        "idempotency_key": str(uuid.uuid4()),
+        "quick_pay": {
+            "name": f"SLK Order #{order.order_number}",
+            "price_money": {
+                "amount": int(order.total_price * 100),
+                "currency": "GBP",
+            },
+            "location_id": settings.SQUARE_LOCATION_ID,
+        },
+        "checkout_options": {
+            "redirect_url": request.build_absolute_uri(
+                f"/square/success/?order_id={order.id}"
+            )
+        },
+        "pre_populated_data": {
+            "buyer_email": order.email,
+        },
+        "payment_note": f"Order ID: {order.id}",
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    response_data = response.json()
+
+    if response.status_code not in [200, 201]:
+        raise Exception(response_data)
+
+    return response_data["payment_link"]["url"]
+
+
+def square_success(request):
+    order_id = request.GET.get("order_id")
+
+    if order_id:
+        try:
+            order = Order.objects.get(id=order_id)
+            order.is_paid = True
+            order.save()
+
+            try:
+                send_order_confirmation_email(order, {})
+            except Exception as e:
+                print("Square email failed:", str(e))
+
+        except Order.DoesNotExist:
+            pass
+
+    request.session['cart'] = {}
+    request.session.modified = True
+
+    return render(request, 'store/checkout_success.html')

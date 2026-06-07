@@ -19,4 +19,7 @@ urlpatterns = [
     path('checkout/', views.checkout_view, name='checkout'),
     path('checkout/success/', views.checkout_success, name='checkout_success'),
     path('stripe/webhook/', views.stripe_webhook, name='stripe_webhook'),
+
+
+    path('square/success/', views.square_success, name='square_success'),
 ]
