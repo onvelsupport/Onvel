@@ -43,6 +43,13 @@ class ProductSize(models.Model):
 
 
 class Order(models.Model):
+    ORDER_STATUS_CHOICES = [
+        ("Processing", "Processing"),
+        ("Shipped", "Shipped"),
+        ("Delivered", "Delivered"),
+        ("Cancelled", "Cancelled"),
+    ]
+
     full_name = models.CharField(max_length=200)
     email = models.EmailField()
     address = models.CharField(max_length=255)
@@ -50,8 +57,19 @@ class Order(models.Model):
     postcode = models.CharField(max_length=20)
     country = models.CharField(max_length=100)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
+
     is_paid = models.BooleanField(default=False)
     stripe_session_id = models.CharField(max_length=255, blank=True, null=True)
+
+    status = models.CharField(
+        max_length=50,
+        choices=ORDER_STATUS_CHOICES,
+        default="Processing"
+    )
+
+    tracking_number = models.CharField(max_length=100, blank=True, null=True)
+    courier = models.CharField(max_length=100, blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property

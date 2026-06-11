@@ -4,173 +4,223 @@
 
 {% block extra_css %}
 <style>
-.status-page{
-    max-width:800px;
-    margin:0 auto;
-    padding:70px 24px 110px;
+.status-page {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 70px 24px 110px;
 }
 
-.status-page h1{
-    text-align:center;
-    font-family:'Times New Roman', serif;
-    font-size:46px;
-    margin-bottom:50px;
-    text-transform:uppercase;
-    letter-spacing:2px;
+.status-page h1 {
+  text-align: center;
+  font-family: 'Times New Roman', serif;
+  font-size: 46px;
+  margin-bottom: 45px;
+  text-transform: uppercase;
 }
 
-.status-card{
-    background:white;
-    border:1px solid #ddd;
-    padding:40px;
+.status-card {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 40px;
 }
 
-.row{
-    display:flex;
-    justify-content:space-between;
-    border-bottom:1px solid #eee;
-    padding:18px 0;
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  padding: 16px 0;
+  gap: 20px;
 }
 
-.row:last-child{
-    border-bottom:none;
+.status-row:last-child {
+  border-bottom: none;
 }
 
-.label{
-    color:#666;
-    text-transform:uppercase;
-    font-size:13px;
-    letter-spacing:1px;
+.label {
+  color: #666;
+  text-transform: uppercase;
+  font-size: 13px;
 }
 
-.value{
-    font-weight:600;
-    text-align:right;
+.value {
+  font-weight: bold;
+  text-align: right;
 }
 
-.status-badge{
-    display:inline-block;
-    padding:8px 16px;
-    border:1px solid #000;
-    text-transform:uppercase;
-    letter-spacing:1px;
+.actions {
+  margin-top: 35px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.download-btn{
-    display:inline-block;
-    margin-top:35px;
-    padding:14px 28px;
-    background:black;
-    color:white;
-    text-decoration:none;
-    text-transform:uppercase;
-    font-size:13px;
+.btn {
+  padding: 14px 24px;
+  background: black;
+  color: white;
+  border: none;
+  text-decoration: none;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  text-transform: uppercase;
+  cursor: pointer;
 }
 
-.download-btn:hover{
-    opacity:.8;
+.btn-light {
+  background: white;
+  color: black;
+  border: 1px solid black;
 }
 
-@media(max-width:768px){
+.btn-danger {
+  background: #8b0000;
+}
 
-    .status-page h1{
-        font-size:32px;
-    }
+.btn:hover {
+  opacity: 0.85;
+}
 
-    .status-card{
-        padding:25px;
-    }
+.message {
+  text-align: center;
+  margin-bottom: 25px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+}
 
-    .row{
-        flex-direction:column;
-        gap:10px;
-    }
+@media (max-width: 600px) {
 
-    .value{
-        text-align:left;
-    }
+  .status-page h1 {
+    font-size: 32px;
+  }
+
+  .status-card {
+    padding: 25px;
+  }
+
+  .status-row {
+    flex-direction: column;
+  }
+
+  .value {
+    text-align: left;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
 }
 </style>
 {% endblock %}
 
 
 {% block content %}
-
 <div class="status-page">
 
-    <h1>Order Status</h1>
+  <h1>Order Status</h1>
 
-    <div class="status-card">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="message">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
 
-        <div class="row">
-            <div class="label">Order Number</div>
-            <div class="value">
-                SLK{{ order.id }}
-            </div>
-        </div>
+  <div class="status-card">
 
-        <div class="row">
-            <div class="label">Customer</div>
-            <div class="value">
-                {{ order.full_name }}
-            </div>
-        </div>
+    <div class="status-row">
+      <div class="label">Order Number</div>
+      <div class="value">
+        {{ order.order_number }}
+      </div>
+    </div>
 
-        <div class="row">
-            <div class="label">Date Ordered</div>
-            <div class="value">
-                {{ order.created_at|date:"d F Y" }}
-            </div>
-        </div>
+    <div class="status-row">
+      <div class="label">Customer</div>
+      <div class="value">
+        {{ order.full_name }}
+      </div>
+    </div>
 
-        <div class="row">
-            <div class="label">Payment Status</div>
-            <div class="value">
-                {% if order.paid %}
-                    Paid
-                {% else %}
-                    Awaiting Payment
-                {% endif %}
-            </div>
-        </div>
+    <div class="status-row">
+      <div class="label">Email</div>
+      <div class="value">
+        {{ order.email }}
+      </div>
+    </div>
 
-        <div class="row">
-            <div class="label">Order Status</div>
-            <div class="value">
-                <span class="status-badge">
-                    {{ order.status }}
-                </span>
-            </div>
-        </div>
+    <div class="status-row">
+      <div class="label">Date Ordered</div>
+      <div class="value">
+        {{ order.created_at|date:"d F Y" }}
+      </div>
+    </div>
 
-        {% if order.tracking_number %}
-        <div class="row">
-            <div class="label">Tracking Number</div>
-            <div class="value">
-                {{ order.tracking_number }}
-            </div>
-        </div>
+    <div class="status-row">
+      <div class="label">Payment Status</div>
+      <div class="value">
+        {% if order.is_paid %}
+          Paid
+        {% else %}
+          Awaiting Payment
         {% endif %}
+      </div>
+    </div>
 
-        {% if order.courier %}
-        <div class="row">
-            <div class="label">Courier</div>
-            <div class="value">
-                {{ order.courier }}
-            </div>
-        </div>
-        {% endif %}
+    <div class="status-row">
+      <div class="label">Order Status</div>
+      <div class="value">
+        {{ order.status }}
+      </div>
+    </div>
 
-        {% if order.invoice %}
-        <div style="text-align:center;">
-            <a href="{{ order.invoice.url }}" class="download-btn">
-                Download Invoice
-            </a>
-        </div>
-        {% endif %}
+    {% if order.tracking_number %}
+    <div class="status-row">
+      <div class="label">Tracking Number</div>
+      <div class="value">
+        {{ order.tracking_number }}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if order.courier %}
+    <div class="status-row">
+      <div class="label">Courier</div>
+      <div class="value">
+        {{ order.courier }}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="actions">
+
+      <a href="{% url 'download_invoice' order.id %}" class="btn">
+        Download Invoice
+      </a>
+
+      <a href="{% url 'tracking' %}" class="btn btn-light">
+        Track Another Order
+      </a>
+
+      {% if order.status != "Cancelled" and order.status != "Shipped" and order.status != "Delivered" %}
+      <form method="POST" action="{% url 'cancel_order' order.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+          Cancel Order
+        </button>
+      </form>
+      {% endif %}
 
     </div>
 
-</div>
+  </div>
 
+</div>
 {% endblock %}
