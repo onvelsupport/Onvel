@@ -1,0 +1,176 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Order Status | SLICKBACK{% endblock %}
+
+{% block extra_css %}
+<style>
+.status-page{
+    max-width:800px;
+    margin:0 auto;
+    padding:70px 24px 110px;
+}
+
+.status-page h1{
+    text-align:center;
+    font-family:'Times New Roman', serif;
+    font-size:46px;
+    margin-bottom:50px;
+    text-transform:uppercase;
+    letter-spacing:2px;
+}
+
+.status-card{
+    background:white;
+    border:1px solid #ddd;
+    padding:40px;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    border-bottom:1px solid #eee;
+    padding:18px 0;
+}
+
+.row:last-child{
+    border-bottom:none;
+}
+
+.label{
+    color:#666;
+    text-transform:uppercase;
+    font-size:13px;
+    letter-spacing:1px;
+}
+
+.value{
+    font-weight:600;
+    text-align:right;
+}
+
+.status-badge{
+    display:inline-block;
+    padding:8px 16px;
+    border:1px solid #000;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.download-btn{
+    display:inline-block;
+    margin-top:35px;
+    padding:14px 28px;
+    background:black;
+    color:white;
+    text-decoration:none;
+    text-transform:uppercase;
+    font-size:13px;
+}
+
+.download-btn:hover{
+    opacity:.8;
+}
+
+@media(max-width:768px){
+
+    .status-page h1{
+        font-size:32px;
+    }
+
+    .status-card{
+        padding:25px;
+    }
+
+    .row{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .value{
+        text-align:left;
+    }
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="status-page">
+
+    <h1>Order Status</h1>
+
+    <div class="status-card">
+
+        <div class="row">
+            <div class="label">Order Number</div>
+            <div class="value">
+                SLK{{ order.id }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">Customer</div>
+            <div class="value">
+                {{ order.full_name }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">Date Ordered</div>
+            <div class="value">
+                {{ order.created_at|date:"d F Y" }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">Payment Status</div>
+            <div class="value">
+                {% if order.paid %}
+                    Paid
+                {% else %}
+                    Awaiting Payment
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">Order Status</div>
+            <div class="value">
+                <span class="status-badge">
+                    {{ order.status }}
+                </span>
+            </div>
+        </div>
+
+        {% if order.tracking_number %}
+        <div class="row">
+            <div class="label">Tracking Number</div>
+            <div class="value">
+                {{ order.tracking_number }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if order.courier %}
+        <div class="row">
+            <div class="label">Courier</div>
+            <div class="value">
+                {{ order.courier }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if order.invoice %}
+        <div style="text-align:center;">
+            <a href="{{ order.invoice.url }}" class="download-btn">
+                Download Invoice
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
