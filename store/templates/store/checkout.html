@@ -2,157 +2,128 @@
 
 {% block extra_css %}
 <style>
-  .checkout-container {
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 40px 60px;
-    display: grid;
-    grid-template-columns: 1fr 420px;
-    gap: 60px;
-  }
+.checkout-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 40px 60px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 60px;
+}
 
-  .checkout-title {
-    font-size: 36px;
-    margin-bottom: 30px;
-    text-transform: uppercase;
-  }
+.checkout-title {
+  font-size: 36px;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
 
-  .checkout-form p {
-    margin-bottom: 28px;
-  }
+.checkout-form p {
+  margin-bottom: 28px;
+}
 
-
-  .checkout-form label {
-    display: block;
-    font-size: 13px;
-    margin-bottom: 6px;
-    text-transform: uppercase;
+.checkout-form label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
 }
 
 .checkout-form input,
 .checkout-form select,
 .checkout-form textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    background: white;
-    font-family: 'Courier New', monospace;
-    font-size: 16px;
-    box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  background: white;
+  font-family: 'Courier New', monospace;
+  font-size: 16px !important;
+  box-sizing: border-box;
 }
 
-  .summary-box {
-    background: white;
-    padding: 25px;
-    border: 1px solid #ddd;
-    height: fit-content;
-  }
+.summary-box {
+  background: white;
+  padding: 25px;
+  border: 1px solid #ddd;
+  height: fit-content;
+}
 
-  .summary-box h2 {
-    font-size: 20px;
-    margin-top: 0;
-    text-transform: uppercase;
-  }
+.place-order-btn,
+.payment-btn {
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  font-size: 16px;
+}
 
-  .summary-item {
-    margin-bottom: 16px;
-    font-size: 14px;
-    text-transform: uppercase;
-  }
+.place-order-btn {
+  background: black;
+  color: white;
+  padding: 14px 28px;
+}
 
-  .place-order-btn {
-    display: inline-block;
-    background: black;
-    color: white;
-    border: none;
-    padding: 14px 28px;
-    font-family: 'Courier New', monospace;
-    text-transform: uppercase;
-    cursor: pointer;
-    width: 100%;
-  }
-
-  .payment-modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-  }
+.payment-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
 
 .payment-content {
-    background: white;
-    width: 450px;
-    max-width: 92%;
-    margin: 150px auto;
-    padding: 40px 35px;
-    text-align: center;
-    position: relative;
-    border: 1px solid #ddd;
-    border-radius: 16px;
+  background: white;
+  width: 450px;
+  max-width: 92%;
+  margin: 150px auto;
+  padding: 40px 35px;
+  text-align: center;
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 16px;
 }
 
-  .payment-content h2 {
-    margin-top: 0;
-    font-size: 20px;
-    text-transform: uppercase;
-  }
-
-  .close-modal {
-    position: absolute;
-    right: 15px;
-    top: 8px;
-    font-size: 28px;
-    cursor: pointer;
-  }
+.close-modal {
+  position: absolute;
+  right: 15px;
+  top: 8px;
+  font-size: 28px;
+  cursor: pointer;
+}
 
 .payment-btn {
-    width: 100%;
-    padding: 18px;
-    margin-top: 20px;
-    border: none;
-    cursor: pointer;
-    font-family: 'Courier New', monospace;
-    text-transform: uppercase;
-    border-radius: 12px;
+  padding: 18px;
+  margin-top: 20px;
+  border-radius: 12px;
 }
 
-  .stripe-btn {
-    background: #635bff;
-    color: white;
-  }
+.stripe-btn {
+  background: #635bff;
+  color: white;
+}
 
-  .square-btn {
-    background: black;
-    color: white;
-  }
+.square-btn {
+  background: black;
+  color: white;
+}
 
 @media (max-width: 900px) {
   .checkout-container {
-    display: block;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    max-width: 100%;
-    padding: 0 20px 50px;
-    margin: 30px auto;
-    overflow-x: hidden;
+    padding: 0 22px 50px;
+    margin: 30px 0;
+    gap: 35px;
   }
 
   .checkout-title {
-    font-size: 40px;
+    font-size: 34px;
   }
 
   .summary-box {
-    margin-top: 35px;
     width: 100%;
-  }
-
-  .checkout-form input,
-  .checkout-form select,
-  .checkout-form textarea {
-    width: 100%;
-    max-width: 100%;
-    font-size: 16px !important;
-    min-height: 48px;
   }
 }
 </style>
@@ -170,6 +141,9 @@
     <form method="post" class="checkout-form">
       {% csrf_token %}
       {{ form.as_p }}
+
+      <input type="hidden" name="payment_method" id="paymentMethod">
+      <input type="hidden" name="stripe_account" id="stripeAccount">
 
       <button type="button" class="place-order-btn" onclick="openPaymentModal()">
         Place Order
@@ -199,16 +173,16 @@
     <h2>Select Payment Method</h2>
 
     <button type="button" class="payment-btn stripe-btn" onclick="submitPayment('stripe', 'a')">
-  Pay with Stripe A
-</button>
+      Pay with Stripe A
+    </button>
 
-<button type="button" class="payment-btn stripe-btn" onclick="submitPayment('stripe', 'b')">
-  Pay with Stripe B
-</button>
+    <button type="button" class="payment-btn stripe-btn" onclick="submitPayment('stripe', 'b')">
+      Pay with Stripe B
+    </button>
 
-<button type="button" class="payment-btn square-btn" onclick="submitPayment('square')">
-  Pay with Square
-</button>
+    <button type="button" class="payment-btn square-btn" onclick="submitPayment('square')">
+      Pay with Square
+    </button>
   </div>
 </div>
 {% endblock %}
@@ -216,36 +190,25 @@
 {% block extra_js %}
 <script>
 function openPaymentModal() {
-    document.getElementById("paymentModal").style.display = "block";
+  document.getElementById("paymentModal").style.display = "block";
 }
 
 function closePaymentModal() {
-    document.getElementById("paymentModal").style.display = "none";
+  document.getElementById("paymentModal").style.display = "none";
 }
 
-function submitPayment(method) {
-    const form = document.querySelector(".checkout-form");
-
-    let existingInput = document.querySelector("input[name='payment_method']");
-    if (existingInput) {
-        existingInput.remove();
-    }
-
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = "payment_method";
-    input.value = method;
-
-    form.appendChild(input);
-    form.submit();
+function submitPayment(method, stripeAccount = "") {
+  document.getElementById("paymentMethod").value = method;
+  document.getElementById("stripeAccount").value = stripeAccount;
+  document.querySelector(".checkout-form").submit();
 }
 
 window.onclick = function(event) {
-    const modal = document.getElementById("paymentModal");
+  const modal = document.getElementById("paymentModal");
 
-    if (event.target === modal) {
-        closePaymentModal();
-    }
+  if (event.target === modal) {
+    closePaymentModal();
+  }
 }
 </script>
 {% endblock %}
