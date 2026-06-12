@@ -13,8 +13,8 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    'slickback.shop',
-    'www.slickback.shop',
+    'onvel.shop',
+    'www.onvel.shop',
     '.onrender.com',
 ]
 
@@ -47,7 +47,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'slickback.urls'
+ROOT_URLCONF = 'onvel.urls'
 
 TEMPLATES = [
     {
@@ -66,7 +66,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'slickback.wsgi.application'
+WSGI_APPLICATION = 'onvel.wsgi.application'
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -116,7 +116,7 @@ STRIPE_WEBHOOK_SECRET_B = os.environ.get("STRIPE_WEBHOOK_SECRET_B")
 
 
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "slickback <orders@slickback.shop>")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "onvel <orders@onvel.shop>")
 
 SQUARE_ACCESS_TOKEN = os.environ.get("SQUARE_ACCESS_TOKEN")
 SQUARE_LOCATION_ID = os.environ.get("SQUARE_LOCATION_ID")

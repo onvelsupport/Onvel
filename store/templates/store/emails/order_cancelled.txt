@@ -3,7 +3,7 @@ YOUR ORDER HAS BEEN CANCELLED
 Order Number:
 {{ order.order_number }}
 
-This email confirms that your SLICKBACK order has been cancelled.
+This email confirms that your ONVEL order has been cancelled.
 
 {% if order.cancellation_reason %}
 Cancellation reason:
@@ -25,6 +25,6 @@ No payment was taken for this order.
 
 If you have any questions regarding this cancellation, please contact us:
 
-https://slickback.shop/contact/
+https://onvel.shop/contact/
 
-Thank you for shopping with SLICKBACK.
+Thank you for shopping with ONVEL.

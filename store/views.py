@@ -82,12 +82,12 @@ def send_order_confirmation_email(order, session):
     order_items = order.items.all()
     payment_method_label = get_payment_method_label(session)
 
-    subject = f"SLK Order Confirmation #{order.order_number}"
+    subject = f"ONV Order Confirmation #{order.order_number}"
 
     context = {
         "order": order,
         "order_items": order_items,
-        "tracking_url": "https://slickback.shop/track-order/",
+        "tracking_url": "https://onvel.shop/track-order/",
         "payment_method": payment_method_label,
         "subtotal": order.total_price,
         "delivery_cost": 0,
@@ -510,8 +510,8 @@ def tracking_result(request):
 
     order_id = (
         order_number
-        .replace("SLK", "")
-        .replace("SLICKBACK", "")
+        .replace("ONV", "")
+        .replace("ONVEL", "")
         .replace("#", "")
         .strip()
     )
@@ -550,7 +550,7 @@ def download_invoice(request, order_id):
 
     # Title
     pdf.setFont("Helvetica-Bold", 22)
-    pdf.drawString(25 * mm, y, "SLICKBACK INVOICE")
+    pdf.drawString(25 * mm, y, "ONVEL INVOICE")
 
     y -= 18 * mm
 
@@ -624,7 +624,7 @@ def download_invoice(request, order_id):
 
     # Footer
     pdf.setFont("Helvetica", 11)
-    pdf.drawString(25 * mm, y, "Thank you for shopping with SLICKBACK.")
+    pdf.drawString(25 * mm, y, "Thank you for shopping with ONVEL.")
 
     pdf.showPage()
     pdf.save()
@@ -657,7 +657,7 @@ def cancel_order(request, order_id):
             context = {
                 "order": order,
                 "order_items": order.items.all(),
-                "tracking_url": "https://slickback.shop/track-order/",
+                "tracking_url": "https://onvel.shop/track-order/",
             }
 
             html_content = render_to_string(
@@ -673,7 +673,7 @@ def cancel_order(request, order_id):
             resend.Emails.send({
                 "from": settings.DEFAULT_FROM_EMAIL,
                 "to": [order.email],
-                "subject": f"Your SLICKBACK order {order.order_number} has been cancelled",
+                "subject": f"Your ONVEL order {order.order_number} has been cancelled",
                 "html": html_content,
                 "text": text_content,
             })
