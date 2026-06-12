@@ -2,6 +2,12 @@
 
 {% block extra_css %}
 <style>
+
+  html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
 .checkout-container {
   max-width: 1200px;
   margin: 40px auto;
@@ -113,17 +119,41 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 0 22px 50px;
+    max-width: 100%;
+    padding: 0 28px 50px;
     margin: 30px 0;
     gap: 35px;
+    overflow: hidden;
+  }
+
+  .checkout-container > div {
+    width: 100%;
+    max-width: 100%;
   }
 
   .checkout-title {
     font-size: 34px;
+    margin-left: 0;
+  }
+
+  .checkout-form p {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .checkout-form input,
+  .checkout-form select,
+  .checkout-form textarea {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-height: 48px;
+    font-size: 16px !important;
   }
 
   .summary-box {
     width: 100%;
+    max-width: 100%;
   }
 }
 </style>
