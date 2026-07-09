@@ -432,7 +432,8 @@ def stripe_webhook(request):
             print("Checkout session completed", flush=True)
 
             session = event["data"]["object"]
-            order_id = session.get("metadata", {}).get("order_id")
+            metadata = getattr(session, "metadata", {}) or {}
+            order_id = metadata.get("order_id")
 
             print("Order ID from metadata:", order_id, flush=True)
 
