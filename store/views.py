@@ -82,12 +82,21 @@ def send_order_confirmation_email(order, session):
     order_items = order.items.all()
     payment_method_label = get_payment_method_label(session)
 
+    recipient_email = (
+        order.email
+        or session.get("customer_email")
+        or session.get("customer_details", {}).get("email")
+    )
+
+    if not recipient_email:
+        raise Exception("No customer email found for order confirmation")
+
     subject = f"ONV Order Confirmation #{order.order_number}"
 
     context = {
         "order": order,
         "order_items": order_items,
-        "tracking_url": "https://onvel.shop/track-order/",
+        "tracking_url": "https://www.onvel.store/track-order/",
         "payment_method": payment_method_label,
         "subtotal": order.total_price,
         "delivery_cost": 0,
@@ -99,13 +108,15 @@ def send_order_confirmation_email(order, session):
     text_content = render_to_string("store/emails/order_confirmation.txt", context)
     html_content = render_to_string("store/emails/order_confirmation.html", context)
 
-    resend.Emails.send({
+    response = resend.Emails.send({
         "from": settings.DEFAULT_FROM_EMAIL,
-        "to": [order.email],
+        "to": [recipient_email],
         "subject": subject,
         "html": html_content,
         "text": text_content,
     })
+
+    print("Resend response:", response)
 
 
 def home(request):
