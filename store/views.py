@@ -77,16 +77,22 @@ def get_payment_method_label(session):
 def send_order_confirmation_email(order, session):
     import resend
 
+    print("=== send_order_confirmation_email started ===")
+
     resend.api_key = settings.RESEND_API_KEY
 
     order_items = order.items.all()
     payment_method_label = get_payment_method_label(session)
 
     recipient_email = (
-        order.email
-        or session.get("customer_email")
+        session.get("customer_email")
         or session.get("customer_details", {}).get("email")
+        or order.email
     )
+
+    print("Order:", order.id)
+    print("Recipient:", recipient_email)
+    print("From:", settings.DEFAULT_FROM_EMAIL)
 
     if not recipient_email:
         raise Exception("No customer email found for order confirmation")
@@ -105,8 +111,20 @@ def send_order_confirmation_email(order, session):
         "total": order.total_price,
     }
 
-    text_content = render_to_string("store/emails/order_confirmation.txt", context)
-    html_content = render_to_string("store/emails/order_confirmation.html", context)
+    print("About to render templates...")
+
+    text_content = render_to_string(
+        "store/emails/order_confirmation.txt",
+        context
+    )
+
+    html_content = render_to_string(
+        "store/emails/order_confirmation.html",
+        context
+    )
+
+    print("Templates rendered successfully")
+    print("Calling Resend API...")
 
     response = resend.Emails.send({
         "from": settings.DEFAULT_FROM_EMAIL,
@@ -117,6 +135,8 @@ def send_order_confirmation_email(order, session):
     })
 
     print("Resend response:", response)
+
+    return response
 
 
 def home(request):
@@ -384,28 +404,42 @@ def stripe_webhook(request):
         sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
         endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
-        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+        event = stripe.Webhook.construct_event(
+            payload,
+            sig_header,
+            endpoint_secret
+        )
+
         print("Event verified:", event["type"])
 
-        if event["type"] == "checkout.session.completed":
-            print("Checkout session completed")
+    except ValueError as e:
+        print("Invalid payload:", str(e))
+        return HttpResponse(status=400)
 
-            session = event["data"]["object"]
-            metadata = session.get("metadata", {})
-            order_id = metadata.get("order_id")
+    except stripe.error.SignatureVerificationError as e:
+        print("Invalid signature:", str(e))
+        return HttpResponse(status=400)
 
-            print("Order ID from metadata:", order_id)
+    except Exception as e:
+        print("Webhook verification error:", str(e))
+        return HttpResponse(status=400)
 
-            if not order_id:
-                print("No order_id found.")
-                return HttpResponse(status=200)
+    if event["type"] == "checkout.session.completed":
+        print("Checkout session completed")
 
-            try:
-                order = Order.objects.get(id=order_id)
-                print("Order found:", order.order_number)
-            except Order.DoesNotExist:
-                print("Order not found:", order_id)
-                return HttpResponse(status=200)
+        session = event["data"]["object"]
+        metadata = session.get("metadata", {})
+        order_id = metadata.get("order_id")
+
+        print("Order ID from metadata:", order_id)
+
+        if not order_id:
+            print("No order_id found.")
+            return HttpResponse(status=200)
+
+        try:
+            order = Order.objects.get(id=order_id)
+            print("Order found:", order.order_number)
 
             if not order.is_paid:
                 order.is_paid = True
@@ -417,24 +451,23 @@ def stripe_webhook(request):
             try:
                 send_order_confirmation_email(order, session)
                 print("HTML email sent successfully to:", order.email)
-            except Exception as e:
+
+            except Exception:
                 import traceback
+                print("Email sending failed:")
                 traceback.print_exc()
-            raise
 
-        return HttpResponse(status=200)
+        except Order.DoesNotExist:
+            print("Order not found:", order_id)
+            return HttpResponse(status=200)
 
-    except ValueError as e:
-        print("Invalid payload:", str(e))
-        return HttpResponse(status=400)
+        except Exception:
+            import traceback
+            print("Webhook processing error:")
+            traceback.print_exc()
+            return HttpResponse(status=200)
 
-    except stripe.error.SignatureVerificationError as e:
-        print("Invalid signature:", str(e))
-        return HttpResponse(status=400)
-
-    except Exception as e:
-        print("Webhook unexpected error:", str(e))
-        return HttpResponse(status=200)
+    return HttpResponse(status=200)
 
 
 def create_square_payment_link(request, order):
