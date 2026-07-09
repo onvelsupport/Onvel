@@ -399,17 +399,27 @@ def checkout_success(request):
 def stripe_webhook(request):
     print("Webhook endpoint hit")
 
+    payload = request.body
+    sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
+
     try:
-        payload = request.body
-        sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
-        endpoint_secret = settings.STRIPE_WEBHOOK_SECRET_A
+        try:
+            event = stripe.Webhook.construct_event(
+                payload,
+                sig_header,
+                settings.STRIPE_WEBHOOK_SECRET_A,
+            )
+            stripe_account = "A"
 
-        event = stripe.Webhook.construct_event(
-            payload,
-            sig_header,
-            endpoint_secret
-        )
+        except stripe.error.SignatureVerificationError:
+            event = stripe.Webhook.construct_event(
+                payload,
+                sig_header,
+                settings.STRIPE_WEBHOOK_SECRET_B,
+            )
+            stripe_account = "B"
 
+        print("Webhook received from Stripe account:", stripe_account)
         print("Event verified:", event["type"])
 
     except ValueError as e:
@@ -417,7 +427,7 @@ def stripe_webhook(request):
         return HttpResponse(status=400)
 
     except stripe.error.SignatureVerificationError as e:
-        print("Invalid signature:", str(e))
+        print("Invalid signature for both Stripe accounts:", str(e))
         return HttpResponse(status=400)
 
     except Exception as e:
