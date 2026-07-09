@@ -418,7 +418,9 @@ def stripe_webhook(request):
                 send_order_confirmation_email(order, session)
                 print("HTML email sent successfully to:", order.email)
             except Exception as e:
-                print("Email sending failed:", str(e))
+                import traceback
+                traceback.print_exc()
+            raise
 
         return HttpResponse(status=200)
 
