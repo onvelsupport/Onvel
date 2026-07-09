@@ -402,7 +402,7 @@ def stripe_webhook(request):
     try:
         payload = request.body
         sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
-        endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+        endpoint_secret = settings.STRIPE_WEBHOOK_SECRET_A
 
         event = stripe.Webhook.construct_event(
             payload,
