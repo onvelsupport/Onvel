@@ -402,22 +402,39 @@ def stripe_webhook(request):
     payload = request.body
     sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
 
-    try:
-        try:
-            event = stripe.Webhook.construct_event(
-                payload,
-                sig_header,
-                settings.STRIPE_WEBHOOK_SECRET_A,
-            )
-            stripe_account = "A"
+    event = None
+    stripe_account = None
 
-        except stripe.error.SignatureVerificationError:
-            event = stripe.Webhook.construct_event(
-                payload,
-                sig_header,
-                settings.STRIPE_WEBHOOK_SECRET_B,
-            )
-            stripe_account = "B"
+    try:
+        secrets = [
+            ("A", getattr(settings, "STRIPE_WEBHOOK_SECRET_A", None)),
+            ("B", getattr(settings, "STRIPE_WEBHOOK_SECRET_B", None)),
+        ]
+
+        last_error = None
+
+        for account_name, secret in secrets:
+            if not secret:
+                print(f"Skipping Stripe {account_name}: webhook secret missing")
+                continue
+
+            try:
+                event = stripe.Webhook.construct_event(
+                    payload,
+                    sig_header,
+                    secret,
+                )
+                stripe_account = account_name
+                break
+
+            except stripe.error.SignatureVerificationError as e:
+                last_error = e
+
+        if event is None:
+            print("Invalid signature for all available Stripe webhook secrets")
+            if last_error:
+                print(str(last_error))
+            return HttpResponse(status=400)
 
         print("Webhook received from Stripe account:", stripe_account)
         print("Event verified:", event["type"])
@@ -426,42 +443,32 @@ def stripe_webhook(request):
         print("Invalid payload:", str(e))
         return HttpResponse(status=400)
 
-    except stripe.error.SignatureVerificationError as e:
-        print("Invalid signature for both Stripe accounts:", str(e))
-        return HttpResponse(status=400)
-
     except Exception as e:
-        print("Webhook verification error:", str(e))
-        return HttpResponse(status=400)
+        import traceback
+        print("Webhook verification error:")
+        traceback.print_exc()
+        return HttpResponse(status=200)
 
     if event["type"] == "checkout.session.completed":
-        print("Checkout session completed")
-
         session = event["data"]["object"]
-        metadata = session.get("metadata", {})
-        order_id = metadata.get("order_id")
+        order_id = session.get("metadata", {}).get("order_id")
 
         print("Order ID from metadata:", order_id)
 
         if not order_id:
-            print("No order_id found.")
             return HttpResponse(status=200)
 
         try:
             order = Order.objects.get(id=order_id)
-            print("Order found:", order.order_number)
 
             if not order.is_paid:
                 order.is_paid = True
                 order.save()
                 print("Order marked as paid")
-            else:
-                print("Order was already marked as paid")
 
             try:
                 send_order_confirmation_email(order, session)
                 print("HTML email sent successfully to:", order.email)
-
             except Exception:
                 import traceback
                 print("Email sending failed:")
@@ -469,13 +476,11 @@ def stripe_webhook(request):
 
         except Order.DoesNotExist:
             print("Order not found:", order_id)
-            return HttpResponse(status=200)
 
         except Exception:
             import traceback
             print("Webhook processing error:")
             traceback.print_exc()
-            return HttpResponse(status=200)
 
     return HttpResponse(status=200)
 
