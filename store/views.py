@@ -397,92 +397,81 @@ def checkout_success(request):
 
 @csrf_exempt
 def stripe_webhook(request):
-    print("Webhook endpoint hit")
-
-    payload = request.body
-    sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
-
-    event = None
-    stripe_account = None
+    print("Webhook endpoint hit", flush=True)
 
     try:
-        secrets = [
-            ("A", getattr(settings, "STRIPE_WEBHOOK_SECRET_A", None)),
-            ("B", getattr(settings, "STRIPE_WEBHOOK_SECRET_B", None)),
-        ]
+        payload = request.body
+        sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
 
-        last_error = None
+        event = None
+        stripe_account = None
 
-        for account_name, secret in secrets:
+        for account_name, secret in [
+            ("A", settings.STRIPE_WEBHOOK_SECRET_A),
+            ("B", settings.STRIPE_WEBHOOK_SECRET_B),
+        ]:
             if not secret:
-                print(f"Skipping Stripe {account_name}: webhook secret missing")
+                print(f"Missing webhook secret for account {account_name}", flush=True)
                 continue
 
             try:
-                event = stripe.Webhook.construct_event(
-                    payload,
-                    sig_header,
-                    secret,
-                )
+                event = stripe.Webhook.construct_event(payload, sig_header, secret)
                 stripe_account = account_name
                 break
-
-            except stripe.error.SignatureVerificationError as e:
-                last_error = e
+            except stripe.error.SignatureVerificationError:
+                continue
 
         if event is None:
-            print("Invalid signature for all available Stripe webhook secrets")
-            if last_error:
-                print(str(last_error))
+            print("Invalid signature for both Stripe accounts", flush=True)
             return HttpResponse(status=400)
 
-        print("Webhook received from Stripe account:", stripe_account)
-        print("Event verified:", event["type"])
+        print("Webhook received from Stripe account:", stripe_account, flush=True)
+        print("Event verified:", event["type"], flush=True)
 
-    except ValueError as e:
-        print("Invalid payload:", str(e))
-        return HttpResponse(status=400)
+        if event["type"] == "checkout.session.completed":
+            print("Checkout session completed", flush=True)
 
-    except Exception as e:
-        import traceback
-        print("Webhook verification error:")
-        traceback.print_exc()
-        return HttpResponse(status=200)
+            session = event["data"]["object"]
+            order_id = session.get("metadata", {}).get("order_id")
 
-    if event["type"] == "checkout.session.completed":
-        session = event["data"]["object"]
-        order_id = session.get("metadata", {}).get("order_id")
+            print("Order ID from metadata:", order_id, flush=True)
 
-        print("Order ID from metadata:", order_id)
-
-        if not order_id:
-            return HttpResponse(status=200)
-
-        try:
-            order = Order.objects.get(id=order_id)
-
-            if not order.is_paid:
-                order.is_paid = True
-                order.save()
-                print("Order marked as paid")
+            if not order_id:
+                return HttpResponse(status=200)
 
             try:
-                send_order_confirmation_email(order, session)
-                print("HTML email sent successfully to:", order.email)
-            except Exception:
-                import traceback
-                print("Email sending failed:")
-                traceback.print_exc()
+                order = Order.objects.get(id=order_id)
+                print("Order found:", order.order_number, flush=True)
 
-        except Order.DoesNotExist:
-            print("Order not found:", order_id)
+                if not order.is_paid:
+                    order.is_paid = True
+                    order.save()
+                    print("Order marked as paid", flush=True)
+                else:
+                    print("Order already paid", flush=True)
 
-        except Exception:
-            import traceback
-            print("Webhook processing error:")
-            traceback.print_exc()
+                try:
+                    send_order_confirmation_email(order, session)
+                    print("Email function completed", flush=True)
+                except Exception:
+                    import traceback
+                    print("Email sending failed:", flush=True)
+                    traceback.print_exc()
 
-    return HttpResponse(status=200)
+            except Order.DoesNotExist:
+                print("Order not found:", order_id, flush=True)
+
+        return HttpResponse(status=200)
+
+    except ValueError as e:
+        print("Invalid payload:", str(e), flush=True)
+        return HttpResponse(status=400)
+
+    except Exception:
+        import traceback
+        print("Webhook crashed:", flush=True)
+        traceback.print_exc()
+        return HttpResponse(status=200)
 
 
 def create_square_payment_link(request, order):
