@@ -429,38 +429,39 @@ def stripe_webhook(request):
         print("Event verified:", event["type"], flush=True)
 
         if event["type"] == "checkout.session.completed":
-            print("Checkout session completed", flush=True)
+    print("Checkout session completed", flush=True)
 
-            session = event["data"]["object"]
-            metadata = getattr(session, "metadata", {}) or {}
-            order_id = metadata.get("order_id")
+    session = event["data"]["object"].to_dict()
 
-            print("Order ID from metadata:", order_id, flush=True)
+    order_id = session.get("metadata", {}).get("order_id")
 
-            if not order_id:
-                return HttpResponse(status=200)
+    print("Order ID from metadata:", order_id, flush=True)
 
-            try:
-                order = Order.objects.get(id=order_id)
-                print("Order found:", order.order_number, flush=True)
+    if not order_id:
+        print("No order_id found in metadata", flush=True)
+        return HttpResponse(status=200)
 
-                if not order.is_paid:
-                    order.is_paid = True
-                    order.save()
-                    print("Order marked as paid", flush=True)
-                else:
-                    print("Order already paid", flush=True)
+    try:
+        order = Order.objects.get(id=order_id)
+        print("Order found:", order.order_number, flush=True)
 
-                try:
-                    send_order_confirmation_email(order, session)
-                    print("Email function completed", flush=True)
-                except Exception:
-                    import traceback
-                    print("Email sending failed:", flush=True)
-                    traceback.print_exc()
+        if not order.is_paid:
+            order.is_paid = True
+            order.save()
+            print("Order marked as paid", flush=True)
+        else:
+            print("Order already paid", flush=True)
 
-            except Order.DoesNotExist:
-                print("Order not found:", order_id, flush=True)
+        try:
+            send_order_confirmation_email(order, session)
+            print("Email function completed", flush=True)
+        except Exception:
+            import traceback
+            print("Email sending failed:", flush=True)
+            traceback.print_exc()
+
+    except Order.DoesNotExist:
+        print("Order not found:", order_id, flush=True)
 
         return HttpResponse(status=200)
 
