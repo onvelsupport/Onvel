@@ -429,7 +429,7 @@ def stripe_webhook(request):
         print("Event verified:", event["type"], flush=True)
 
         if event["type"] == "checkout.session.completed":
-    print("Checkout session completed", flush=True)
+            print("Checkout session completed", flush=True)
 
     session = event["data"]["object"].to_dict()
 
