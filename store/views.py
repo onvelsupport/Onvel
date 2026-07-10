@@ -74,9 +74,16 @@ def get_payment_method_label(session):
         return "CARD"
 
 
-def send_order_confirmation_email(order, session):
-    import resend
+from datetime import timedelta
 
+import resend
+
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.utils import timezone
+
+
+def send_order_confirmation_email(order, session):
     print("=== send_order_confirmation_email started ===")
 
     resend.api_key = settings.RESEND_API_KEY
@@ -99,6 +106,19 @@ def send_order_confirmation_email(order, session):
 
     subject = f"ONV Order Confirmation #{order.order_number}"
 
+    order_created_at = (
+        getattr(order, "created_at", None)
+        or getattr(order, "created", None)
+        or getattr(order, "ordered_at", None)
+        or getattr(order, "date_created", None)
+        or timezone.now()
+    )
+
+    if timezone.is_aware(order_created_at):
+        order_created_at = timezone.localtime(order_created_at)
+
+    estimated_delivery = order_created_at.date() + timedelta(days=2)
+
     context = {
         "order": order,
         "order_items": order_items,
@@ -109,18 +129,20 @@ def send_order_confirmation_email(order, session):
         "delivery_discount": 0,
         "discount": 0,
         "total": order.total_price,
+        "estimated_delivery": estimated_delivery,
     }
 
+    print("Estimated delivery:", estimated_delivery)
     print("About to render templates...")
 
     text_content = render_to_string(
         "store/emails/order_confirmation.txt",
-        context
+        context,
     )
 
     html_content = render_to_string(
         "store/emails/order_confirmation.html",
-        context
+        context,
     )
 
     print("Templates rendered successfully")

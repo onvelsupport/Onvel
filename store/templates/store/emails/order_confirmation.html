@@ -1,41 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Order Confirmation</title>
+</head>
+
 <body style="margin:0; padding:0; background:#ffffff; font-family:Arial, sans-serif;">
 
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff; padding:20px;">
+<table
+  width="100%"
+  cellpadding="0"
+  cellspacing="0"
+  role="presentation"
+  style="width:100%; background:#ffffff; padding:20px;"
+>
   <tr>
-    <td style="text-align:center;">
+    <td align="center" style="text-align:center;">
 
       <!-- MAIN CONTAINER -->
-      <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;">
+      <table
+        width="600"
+        cellpadding="0"
+        cellspacing="0"
+        role="presentation"
+        style="width:100%; max-width:600px; background:#ffffff;"
+      >
 
         <!-- LOGO -->
         <tr>
-          <td style="text-align:center; padding:20px 0;">
-            <img src="https://onvel.shop/static/store/images/ONV.png" width="120" style="display:block; margin:auto;">
+          <td align="center" style="text-align:center; padding:20px 0;">
+            <img
+              src="https://onvel.shop/static/store/images/ONV.png"
+              width="120"
+              alt="ONV"
+              style="display:block; width:120px; max-width:120px; height:auto; margin:auto; border:0;"
+            >
           </td>
         </tr>
 
         <!-- TITLE -->
         <tr>
-          <td style="text-align:center; padding:20px 0;">
-            <h2 style="margin:0; font-size:24px;">THANK YOU FOR SHOPPING WITH US</h2>
+          <td align="center" style="text-align:center; padding:20px 15px;">
+            <h2 style="margin:0; font-size:24px; line-height:1.4; color:#111111;">
+              THANK YOU FOR SHOPPING WITH US
+            </h2>
           </td>
         </tr>
 
         <!-- ORDER NUMBER -->
         <tr>
-          <td style="text-align:center; padding:10px 0;">
-            <p style="margin:0; color:#777;">Order number</p>
-            <h1 style="margin:5px 0; color:#2a5ea7;">{{ order.order_number }}</h1>
+          <td align="center" style="text-align:center; padding:10px 15px;">
+            <p style="margin:0; color:#777777; font-size:14px;">
+              Order number
+            </p>
+
+            <h1 style="margin:5px 0; color:#2a5ea7; font-size:30px;">
+              {{ order.order_number }}
+            </h1>
           </td>
         </tr>
 
         <!-- ADDRESS -->
         <tr>
           <td style="padding:20px;">
-            <p><strong>Delivery to:</strong></p>
-            <p style="line-height:1.6;">
+            <p style="margin:0 0 10px 0; color:#111111;">
+              <strong>Delivery to:</strong>
+            </p>
+
+            <p style="margin:0; line-height:1.6; color:#555555;">
               {{ order.address }}<br>
               {{ order.city }}<br>
               {{ order.postcode }}<br>
@@ -44,21 +78,45 @@
           </td>
         </tr>
 
-        <!-- INFO BOX -->
+        <!-- DELIVERY INFORMATION -->
         <tr>
           <td style="padding:20px;">
-            <div style="background:#f2f2f2; padding:15px; text-align:center;">
-              We will notify you by email once your order is ready for dispatch.
-            </div>
+            <table
+              width="100%"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="width:100%; background:#f2f2f2;"
+            >
+              <tr>
+                <td align="center" style="padding:20px; text-align:center;">
+
+                  <p style="margin:0; color:#444444; font-size:15px; line-height:1.6;">
+                    We will notify you by email once your order is ready for dispatch.
+                  </p>
+
+                  <p style="margin:18px 0 5px 0; color:#777777; font-size:14px;">
+                    Estimated delivery date
+                  </p>
+
+                  <p style="margin:0; color:#2a5ea7; font-size:19px; font-weight:bold;">
+                    {{ estimated_delivery|date:"l, j F Y" }}
+                  </p>
+
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
 
-        <!-- BUTTON -->
+        <!-- TRACKING BUTTON -->
         <tr>
-          <td style="text-align:center; padding:20px;">
-            <a href="{{ tracking_url }}" 
-               style="background:#000; color:#fff; padding:15px 30px; text-decoration:none; display:inline-block;">
-               Track my order
+          <td align="center" style="text-align:center; padding:20px;">
+            <a
+              href="{{ tracking_url }}"
+              style="background:#000000; color:#ffffff; padding:15px 30px; text-decoration:none; display:inline-block; font-size:15px; font-weight:bold;"
+            >
+              Track my order
             </a>
           </td>
         </tr>
@@ -66,22 +124,53 @@
         <!-- PRODUCTS -->
         {% for item in order_items %}
         <tr>
-          <td style="padding:20px; border-top:1px solid #eee;">
-            <table width="100%">
+          <td style="padding:20px; border-top:1px solid #eeeeee;">
+            <table
+              width="100%"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="width:100%;"
+            >
               <tr>
 
-                <!-- IMAGE -->
-                <td width="120">
-                  <img src="{{ item.product.image.url }}" width="100" style="display:block;">
+                <!-- PRODUCT IMAGE -->
+                <td
+                  width="120"
+                  valign="top"
+                  style="width:120px; vertical-align:top;"
+                >
+                  {% if item.product.image %}
+                    <img
+                      src="{{ item.product.image.url }}"
+                      width="100"
+                      alt="{{ item.product.name }}"
+                      style="display:block; width:100px; max-width:100px; height:auto; border:0;"
+                    >
+                  {% endif %}
                 </td>
 
-                <!-- DETAILS -->
-                <td>
-                  <p style="margin:0;"><strong>{{ item.product.name }}</strong></p>
-                  <p style="margin:5px 0;">£{{ item.price }}</p>
-                  <p style="margin:5px 0; color:#777;">
-                    {{ item.quantity }} Unit 
-                    {% if item.size %}| {{ item.size }}{% endif %}
+                <!-- PRODUCT DETAILS -->
+                <td valign="top" style="vertical-align:top; padding-left:10px;">
+                  <p style="margin:0; color:#111111; line-height:1.5;">
+                    <strong>{{ item.product.name }}</strong>
+                  </p>
+
+                  <p style="margin:5px 0; color:#111111;">
+                    £{{ item.price }}
+                  </p>
+
+                  <p style="margin:5px 0; color:#777777; font-size:14px;">
+                    {{ item.quantity }}
+                    {% if item.quantity == 1 %}
+                      Unit
+                    {% else %}
+                      Units
+                    {% endif %}
+
+                    {% if item.size %}
+                      | {{ item.size }}
+                    {% endif %}
                   </p>
                 </td>
 
@@ -91,67 +180,110 @@
         </tr>
         {% endfor %}
 
-         <!-- DIVIDER -->
-<tr>
-  <td style="padding:20px 0;">
-    <hr style="border:none; border-top:1px solid #eee;">
-  </td>
-</tr>
+        <!-- DIVIDER -->
+        <tr>
+          <td style="padding:20px 0;">
+            <hr style="border:none; border-top:1px solid #eeeeee; margin:0;">
+          </td>
+        </tr>
 
-<!-- TOTALS -->
-<tr>
-  <td style="padding:0 20px 20px 20px;">
-    <table width="100%" style="font-size:14px; color:#555;">
+        <!-- TOTALS -->
+        <tr>
+          <td style="padding:0 20px 20px 20px;">
+            <table
+              width="100%"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="width:100%; font-size:14px; color:#555555;"
+            >
 
-      <tr>
-        <td style="padding:6px 0;">Payment method</td>
-        <td style="text-align:right; padding:6px 0;">{{ payment_method }}</td>
-      </tr>
+              <tr>
+                <td style="padding:6px 0;">
+                  Payment method
+                </td>
 
-      <tr>
-        <td style="padding:6px 0;">Subtotal</td>
-        <td style="text-align:right; padding:6px 0;">£{{ subtotal }}</td>
-      </tr>
+                <td align="right" style="text-align:right; padding:6px 0;">
+                  {{ payment_method }}
+                </td>
+              </tr>
 
-      <tr>
-        <td style="padding:6px 0;">Delivery Costs</td>
-        <td style="text-align:right; padding:6px 0;">£{{ delivery_cost }}</td>
-      </tr>
+              <tr>
+                <td style="padding:6px 0;">
+                  Subtotal
+                </td>
 
-      <tr>
-        <td style="padding:6px 0;">Delivery discount</td>
-        <td style="text-align:right; padding:6px 0;">-£{{ delivery_discount }}</td>
-      </tr>
+                <td align="right" style="text-align:right; padding:6px 0;">
+                  £{{ subtotal }}
+                </td>
+              </tr>
 
-      <tr>
-        <td style="padding:6px 0;">Discount</td>
-        <td style="text-align:right; padding:6px 0;">-£{{ discount }}</td>
-      </tr>
+              <tr>
+                <td style="padding:6px 0;">
+                  Delivery costs
+                </td>
 
-    </table>
-  </td>
-</tr>
+                <td align="right" style="text-align:right; padding:6px 0;">
+                  £{{ delivery_cost }}
+                </td>
+              </tr>
 
-<!-- TOTAL -->
-<tr>
-  <td style="padding:0 20px 20px 20px;">
-    <table width="100%">
-      <tr>
-        <td style="font-size:16px; font-weight:bold;">TOTAL</td>
-        <td style="text-align:right; font-size:18px; font-weight:bold;">
-          £{{ total }}
-        </td>
-      </tr>
-    </table>
-  </td>
-</tr>
+              <tr>
+                <td style="padding:6px 0;">
+                  Delivery discount
+                </td>
 
-<!-- BOTTOM DIVIDER -->
-<tr>
-  <td style="padding:10px 0;">
-    <hr style="border:none; border-top:1px solid #eee;">
-  </td>
-</tr>
+                <td align="right" style="text-align:right; padding:6px 0;">
+                  -£{{ delivery_discount }}
+                </td>
+              </tr>
+
+              <tr>
+                <td style="padding:6px 0;">
+                  Discount
+                </td>
+
+                <td align="right" style="text-align:right; padding:6px 0;">
+                  -£{{ discount }}
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+
+        <!-- TOTAL -->
+        <tr>
+          <td style="padding:0 20px 20px 20px;">
+            <table
+              width="100%"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="width:100%;"
+            >
+              <tr>
+                <td style="font-size:16px; font-weight:bold; color:#111111;">
+                  TOTAL
+                </td>
+
+                <td
+                  align="right"
+                  style="text-align:right; font-size:18px; font-weight:bold; color:#111111;"
+                >
+                  £{{ total }}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- BOTTOM DIVIDER -->
+        <tr>
+          <td style="padding:10px 0;">
+            <hr style="border:none; border-top:1px solid #eeeeee; margin:0;">
+          </td>
+        </tr>
 
       </table>
 

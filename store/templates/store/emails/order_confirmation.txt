@@ -1,21 +1,37 @@
-Hello {{ order.full_name }},
+THANK YOU FOR SHOPPING WITH US
 
-Thank you for your order from ONV.
+Your order has been confirmed.
 
-Order Number: {{ order.order_number }}
+Order number:
+{{ order.order_number }}
 
-Delivery address:
+Delivery to:
 {{ order.address }}
 {{ order.city }}
 {{ order.postcode }}
 {{ order.country }}
 
-Items:
-{% for item in order_items %}
-- {{ item.product.name }}{% if item.size %} ({{ item.size }}){% endif %} x {{ item.quantity }} - £{{ item.price }}
-{% endfor %}
+Estimated delivery date:
+{{ estimated_delivery|date:"l, j F Y" }}
+
+We will notify you by email once your order is ready for dispatch.
 
 Track your order:
 {{ tracking_url }}
 
-ONV
+ORDER ITEMS
+{% for item in order_items %}
+{{ item.product.name }}
+Quantity: {{ item.quantity }}
+{% if item.size %}Size: {{ item.size }}{% endif %}
+Price: £{{ item.price }}
+
+{% endfor %}
+
+Payment method: {{ payment_method }}
+Subtotal: £{{ subtotal }}
+Delivery costs: £{{ delivery_cost }}
+Delivery discount: -£{{ delivery_discount }}
+Discount: -£{{ discount }}
+
+TOTAL: £{{ total }}
